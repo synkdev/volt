@@ -240,6 +240,7 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
                 border_width: 5.0,
                 border_color: skia_safe::Color::RED,
                 text_color: skia_safe::Color::TRANSPARENT,
+                font_size: 16.0,
             };
             button.render(canvas);
             env.gr_context.flush_and_submit();

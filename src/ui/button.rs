@@ -1,10 +1,10 @@
 use crate::ui::Component;
-use skia_safe::{Canvas, Color, Paint, PaintStyle, Rect, Surface, Typeface};
+use skia_safe::{Canvas, Color, Paint, PaintStyle, RRect, Rect, Surface, Typeface};
 
 pub struct Button {
     pub text: String,
-    pub position: (i32, i32),
-    pub size: (u32, u32),
+    pub position: (f32, f32),
+    pub size: (f32, f32),
     pub color: crate::ui::Color,
     pub radius: u32,
     pub border_width: u32,
@@ -13,7 +13,11 @@ pub struct Button {
 }
 
 impl Component for Button {
-    fn render(&self, canvas: &skia_safe::canvas::Canvas) {}
-}
+    fn render(&self, canvas: &skia_safe::canvas::Canvas) {
+        let rect = Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1);
 
-pub fn button(canvas: &skia_safe::canvas::Canvas, center: (i32, i32), radius: i32) {}
+        // paint
+
+        canvas.draw_round_rect(rect, 20.0, 20.0, paint);
+    }
+}

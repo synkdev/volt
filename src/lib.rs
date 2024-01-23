@@ -27,6 +27,8 @@ use winit::{
     window::{Window, WindowBuilder},
 };
 
+use crate::ui::Component;
+
 // use ui::draw_button;
 
 pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
@@ -229,6 +231,17 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
             let canvas = env.surface.canvas();
             canvas.clear(Color::from_rgb(30, 29, 45));
             // button(&canvas, (0, 0), (300, 100), "#f38ba8", "Click Me!");
+            let button = crate::ui::button::Button {
+                text: "Something".to_string(),
+                position: (0.0, 0.0),
+                size: (200.0, 80.0),
+                color: crate::ui::Color::Hex("#cdd6f4".to_string()).into().unwrap(),
+                radius: 10,
+                border_width: 0,
+                border_color: skia_safe::Color::TRANSPARENT,
+                text_color: skia_safe::Color::TRANSPARENT,
+            };
+            button.render(canvas);
             env.gr_context.flush_and_submit();
             env.gl_surface.swap_buffers(&env.gl_context).unwrap();
         }

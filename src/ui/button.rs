@@ -1,7 +1,7 @@
 use crate::ui::Component;
 
 pub struct Button {
-    pub text: String,
+    pub text: &'static str,
     pub position: (f32, f32),
     pub size: (f32, f32),
     pub color: skia_safe::Color,
@@ -36,5 +36,16 @@ impl Component for Button {
         // Draw text
         paint.set_color(self.text_color);
         paint.set_style(skia_safe::PaintStyle::Fill);
+        let font_style = skia_safe::font_style::FontStyle::new(
+            skia_safe::font_style::Weight::NORMAL,
+            skia_safe::font_style::Width::NORMAL,
+            skia_safe::font_style::Slant::Upright,
+        );
+        let font_family = skia_safe::FontMgr::new()
+            .match_family_style("JetBrains Mono", font_style)
+            .unwrap();
+        let font = skia_safe::Font::from_typeface(font_family, self.font_size);
+        let text = skia_safe::TextBlob::from_str(self.text, &font).unwrap();
+        canvas.draw_text_blob(text, (10.0, 10.0), &paint);
     }
 }

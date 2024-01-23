@@ -232,14 +232,14 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
             canvas.clear(Color::from_rgb(30, 29, 45));
             // button(&canvas, (0, 0), (300, 100), "#f38ba8", "Click Me!");
             let button = crate::ui::button::Button {
-                text: "Something".to_string(),
+                text: "Something",
                 position: (0.0, 0.0),
                 size: (200.0, 30.0),
                 color: crate::ui::Color::Hex("#cdd6f4".to_string()).into().unwrap(),
                 radius: 10.0,
                 border_width: 5.0,
                 border_color: skia_safe::Color::RED,
-                text_color: skia_safe::Color::TRANSPARENT,
+                text_color: skia_safe::Color::RED,
                 font_size: 16.0,
             };
             button.render(canvas);

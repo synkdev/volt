@@ -234,11 +234,11 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
             let button = crate::ui::button::Button {
                 text: "Something".to_string(),
                 position: (0.0, 0.0),
-                size: (200.0, 80.0),
+                size: (200.0, 30.0),
                 color: crate::ui::Color::Hex("#cdd6f4".to_string()).into().unwrap(),
-                radius: 10,
-                border_width: 0,
-                border_color: skia_safe::Color::TRANSPARENT,
+                radius: 10.0,
+                border_width: 5.0,
+                border_color: skia_safe::Color::RED,
                 text_color: skia_safe::Color::TRANSPARENT,
             };
             button.render(canvas);

@@ -27,6 +27,9 @@ use winit::{
     window::{Window, WindowBuilder},
 };
 
+// Re-exports
+pub use skia_safe::font_style::{Slant, Weight};
+
 use crate::ui::Component;
 
 // use ui::draw_button;
@@ -241,6 +244,9 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
                 border_color: skia_safe::Color::RED,
                 text_color: skia_safe::Color::RED,
                 font_size: 16.0,
+                font_family: "JetBrains Mono",
+                font_weight: Weight::BOLD,
+                font_style: Slant::Italic,
             };
             button.render(canvas);
             env.gr_context.flush_and_submit();

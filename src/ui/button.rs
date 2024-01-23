@@ -10,6 +10,9 @@ pub struct Button {
     pub border_color: skia_safe::Color,
     pub text_color: skia_safe::Color,
     pub font_size: f32,
+    pub font_family: &'static str,
+    pub font_weight: skia_safe::font_style::Weight,
+    pub font_style: skia_safe::font_style::Slant,
 }
 
 impl Component for Button {
@@ -37,12 +40,12 @@ impl Component for Button {
         paint.set_color(self.text_color);
         paint.set_style(skia_safe::PaintStyle::Fill);
         let font_style = skia_safe::font_style::FontStyle::new(
-            skia_safe::font_style::Weight::NORMAL,
+            self.font_weight,
             skia_safe::font_style::Width::NORMAL,
-            skia_safe::font_style::Slant::Upright,
+            self.font_style,
         );
         let font_family = skia_safe::FontMgr::new()
-            .match_family_style("JetBrains Mono", font_style)
+            .match_family_style(self.font_family, font_style)
             .unwrap();
         let font = skia_safe::Font::from_typeface(font_family, self.font_size);
         let text = skia_safe::TextBlob::from_str(self.text, &font).unwrap();

@@ -27,7 +27,6 @@ impl Color {
             Color::Hex(hex) => {
                 let hex = hex.strip_prefix("#").unwrap_or(hex.as_str());
 
-                println!("{}", hex.len());
                 if hex.len() != 6 && hex.len() != 3 && hex.len() != 8 {
                     return Err(anyhow::anyhow!("Invalid length for hex color. Must be 3, 6 or 8 characters long (excluding the # symbol if any)"));
                 } else if hex.len() == 3 {

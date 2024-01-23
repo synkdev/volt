@@ -27,7 +27,7 @@ use winit::{
     window::{Window, WindowBuilder},
 };
 
-use ui::draw_button;
+// use ui::draw_button;
 
 pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
     let event_loop = EventLoop::new()?;
@@ -228,7 +228,7 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
             frame += 1;
             let canvas = env.surface.canvas();
             canvas.clear(Color::from_rgb(30, 29, 45));
-            button(&canvas, (0, 0), (300, 100), "#f38ba8", "Click Me!");
+            // button(&canvas, (0, 0), (300, 100), "#f38ba8", "Click Me!");
             env.gr_context.flush_and_submit();
             env.gl_surface.swap_buffers(&env.gl_context).unwrap();
         }

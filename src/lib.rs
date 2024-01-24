@@ -13,17 +13,13 @@ use glutin_winit::DisplayBuilder;
 use raw_window_handle::HasRawWindowHandle;
 use skia_safe::{
     gpu::{self, backend_render_targets, gl::FramebufferInfo, SurfaceOrigin},
-    Color, ColorType, Rect, Surface,
+    Color, ColorType, Surface,
 };
-use std::{
-    ffi::CString,
-    num::NonZeroU32,
-    time::{Duration, Instant},
-};
+use std::{ffi::CString, num::NonZeroU32};
 use winit::{
     dpi::LogicalSize,
     event::{Event, KeyEvent, Modifiers, WindowEvent},
-    event_loop::{ControlFlow, EventLoop},
+    event_loop::EventLoop,
     window::{Window, WindowBuilder},
 };
 
@@ -174,11 +170,9 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
         gr_context,
         window,
     };
-    let mut previous_frame_start = Instant::now();
     let mut modifiers = Modifiers::default();
     let mut paint = skia_safe::Paint::default();
     event_loop.run(move |event, window_target| {
-        let frame_start = Instant::now();
         let mut draw_frame = false;
 
         if let Event::WindowEvent { event, .. } = event {

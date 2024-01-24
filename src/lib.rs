@@ -5,7 +5,7 @@ use gl_rs as gl;
 use glutin::{
     config::{ConfigTemplateBuilder, GlConfig},
     context::{ContextApi, ContextAttributesBuilder, PossiblyCurrentContext},
-    display::{GetGlDisplay, GlDisplay},
+    display::{Display, GetGlDisplay, GlDisplay},
     prelude::{GlSurface, NotCurrentGlContext},
     surface::{Surface as GlutinSurface, SurfaceAttributesBuilder, WindowSurface},
 };
@@ -36,6 +36,7 @@ pub struct Volt {
     gr_context: skia::gpu::DirectContext,
     gl_context: PossiblyCurrentContext,
     window: Window,
+    event_loop: Option<EventLoop<()>>,
 }
 
 impl Volt {
@@ -45,6 +46,7 @@ impl Volt {
         win_height: u32,
         fill: skia::Color,
     ) -> anyhow::Result<Self> {
+        let event_loop = EventLoop::new()?;
         let winit_window_builder = WindowBuilder::new()
             .with_title(title)
             .with_inner_size(LogicalSize::new(win_width, win_height));
@@ -154,10 +156,11 @@ impl Volt {
             window,
             modifiers,
             paint,
+            event_loop: Some(event_loop),
         })
     }
     pub fn run(mut self) -> anyhow::Result<()> {
-        let event_loop = EventLoop::new()?;
+        let event_loop = self.event_loop.take().unwrap();
         event_loop.run(move |event, window_target| {
             let mut draw_frame = false;
 
@@ -167,32 +170,15 @@ impl Volt {
                         window_target.exit();
                         return;
                     }
-                    WindowEvent::Resized(physical_size) => {
-                        env.surface = Self::create_surface(
-                            &env.window,
-                            fb_info,
-                            &mut env.gr_context,
-                            num_samples,
-                            stencil_size,
-                        );
-                        let (width, height): (u32, u32) = physical_size.into();
-
-                        env.gl_surface.resize(
-                            &env.gl_context,
-                            NonZeroU32::new(width.max(1)).unwrap(),
-                            NonZeroU32::new(height.max(1)).unwrap(),
-                        );
-                    }
-                    WindowEvent::ModifiersChanged(new_modifiers) => modifiers = new_modifiers,
+                    WindowEvent::ModifiersChanged(new_modifiers) => self.modifiers = new_modifiers,
                     WindowEvent::KeyboardInput {
                         event: KeyEvent { logical_key, .. },
                         ..
                     } => {
-                        if modifiers.state().super_key() && logical_key == "q" {
+                        if self.modifiers.state().super_key() && logical_key == "q" {
                             window_target.exit();
                         }
-                        frame = frame.saturating_sub(10);
-                        env.window.request_redraw();
+                        self.window.request_redraw();
                     }
                     WindowEvent::RedrawRequested => {
                         draw_frame = true;
@@ -201,7 +187,7 @@ impl Volt {
                 }
             }
             if draw_frame {
-                let canvas = env.surface.canvas();
+                let canvas = self.surface.canvas();
                 canvas.clear(Color::from_rgb(30, 29, 45));
                 let mut button = crate::ui::button::Button {
                     text: "Something",
@@ -218,9 +204,9 @@ impl Volt {
                     font_style: font_style::Slant::Italic,
                 };
                 button.set_text("hello");
-                button.render(canvas, &mut paint);
-                env.gr_context.flush_and_submit();
-                env.gl_surface.swap_buffers(&env.gl_context).unwrap();
+                button.render(canvas, &mut self.paint);
+                self.gr_context.flush_and_submit();
+                self.gl_surface.swap_buffers(&self.gl_context).unwrap();
             }
         })?;
 

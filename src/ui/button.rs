@@ -51,7 +51,9 @@ impl Component for Button {
         let text = skia_safe::TextBlob::from_str(self.text, &font).unwrap();
         let text_bounds = font.measure_text(self.text, Some(&paint));
         let text_x = rect.center_x() - (text_bounds.1.width() / 2.0);
-        let text_y = rect.center_y() + (text_bounds.1.height() / 2.0);
+        let text_offset =
+            ((font.metrics().1.descent - font.metrics().1.ascent) / 2.0) - font.metrics().1.descent;
+        let text_y = rect.center_y() + text_offset;
         canvas.draw_text_blob(text, (text_x, text_y), &paint);
     }
 }

@@ -32,8 +32,6 @@ pub use skia_safe::font_style::{Slant, Weight};
 
 use crate::ui::Component;
 
-// use ui::draw_button;
-
 pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
     let event_loop = EventLoop::new()?;
     let winit_window_builder = WindowBuilder::new()
@@ -243,7 +241,7 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
                 border_width: 0.0,
                 border_color: skia_safe::Color::RED,
                 text_color: skia_safe::Color::RED,
-                font_size: 26.0,
+                font_size: 27.0,
                 font_family: "JetBrains Mono",
                 font_weight: Weight::BOLD,
                 font_style: Slant::Italic,

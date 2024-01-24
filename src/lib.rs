@@ -176,7 +176,7 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
     };
     let mut previous_frame_start = Instant::now();
     let mut modifiers = Modifiers::default();
-
+    let mut paint = skia_safe::Paint::default();
     event_loop.run(move |event, window_target| {
         let frame_start = Instant::now();
         let mut draw_frame = false;
@@ -237,7 +237,7 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
                 font_weight: Weight::BOLD,
                 font_style: Slant::Italic,
             };
-            button.render(canvas);
+            button.render(canvas, &mut paint);
             env.gr_context.flush_and_submit();
             env.gl_surface.swap_buffers(&env.gl_context).unwrap();
         }

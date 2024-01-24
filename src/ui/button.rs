@@ -16,11 +16,10 @@ pub struct Button {
 }
 
 impl Component for Button {
-    fn render(&self, canvas: &skia_safe::canvas::Canvas) {
+    fn render(&self, canvas: &skia_safe::canvas::Canvas, paint: &mut skia_safe::Paint) {
         let rect =
             skia_safe::Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1);
 
-        let mut paint = skia_safe::Paint::default();
         paint.set_anti_alias(true);
 
         // Draw button box

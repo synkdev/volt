@@ -236,14 +236,14 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
             // button(&canvas, (0, 0), (300, 100), "#f38ba8", "Click Me!");
             let button = crate::ui::button::Button {
                 text: "Something",
-                position: (0.0, 0.0),
-                size: (200.0, 30.0),
+                position: (10.0, 10.0),
+                size: (200.0, 50.0),
                 color: crate::ui::Color::Hex("#cdd6f4".to_string()).into().unwrap(),
                 radius: 10.0,
-                border_width: 5.0,
+                border_width: 0.0,
                 border_color: skia_safe::Color::RED,
                 text_color: skia_safe::Color::RED,
-                font_size: 16.0,
+                font_size: 26.0,
                 font_family: "JetBrains Mono",
                 font_weight: Weight::BOLD,
                 font_style: Slant::Italic,

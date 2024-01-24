@@ -220,18 +220,9 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
                 _ => (),
             }
         }
-        let expected_frame_length_seconds = 1.0 / 20.0;
-        let frame_duration = Duration::from_secs_f32(expected_frame_length_seconds);
-
-        if frame_start - previous_frame_start > frame_duration {
-            draw_frame = true;
-            previous_frame_start = frame_start;
-        }
         if draw_frame {
-            frame += 1;
             let canvas = env.surface.canvas();
             canvas.clear(Color::from_rgb(30, 29, 45));
-            // button(&canvas, (0, 0), (300, 100), "#f38ba8", "Click Me!");
             let button = crate::ui::button::Button {
                 text: "Something",
                 position: (10.0, 10.0),
@@ -250,10 +241,6 @@ pub fn run(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<()> {
             env.gr_context.flush_and_submit();
             env.gl_surface.swap_buffers(&env.gl_context).unwrap();
         }
-
-        window_target.set_control_flow(ControlFlow::WaitUntil(
-            previous_frame_start + frame_duration,
-        ))
     })?;
 
     Ok(())

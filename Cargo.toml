@@ -11,5 +11,5 @@ gl-rs = { package = "gl", version = "0.14.0" }
 glutin = "0.31.2"
 glutin-winit = "0.4.2"
 raw-window-handle = "0.5.0"
-skia-safe = { version = "0.70.0", features = ["gl", "wayland", "shaper", "textlayout", "svg"] }
+skia = { package = "skia-safe", version = "0.70.0", features = ["gl", "wayland", "shaper", "textlayout", "svg"] }
 winit = "0.29.10"

@@ -16,7 +16,7 @@ impl Color {
     pub fn default_rgba() -> Self {
         Color::Rgba(30, 29, 45, 100)
     }
-    pub fn into(self) -> anyhow::Result<skia_safe::Color> {
+    pub fn into(self) -> anyhow::Result<skia::Color> {
         match self {
             Color::Hex(hex) => {
                 let hex = hex.strip_prefix("#").unwrap_or(hex.as_str());
@@ -31,27 +31,27 @@ impl Color {
                     let blue =
                         u8::from_str_radix(&format!("{}{}", &hex[2..3], &hex[2..3]), 16).unwrap();
 
-                    return Ok(skia_safe::Color::from_rgb(red, green, blue));
+                    return Ok(skia::Color::from_rgb(red, green, blue));
                 } else if hex.len() == 6 {
                     let red = u8::from_str_radix(&hex[0..2], 16).unwrap();
                     let green = u8::from_str_radix(&hex[2..4], 16).unwrap();
                     let blue = u8::from_str_radix(&hex[4..6], 16).unwrap();
 
-                    return Ok(skia_safe::Color::from_rgb(red, green, blue));
+                    return Ok(skia::Color::from_rgb(red, green, blue));
                 } else if hex.len() == 8 {
                     let red = u8::from_str_radix(&hex[0..2], 16).unwrap();
                     let green = u8::from_str_radix(&hex[2..4], 16).unwrap();
                     let blue = u8::from_str_radix(&hex[4..6], 16).unwrap();
                     let alpha = u8::from_str_radix(&hex[6..8], 16).unwrap();
 
-                    return Ok(skia_safe::Color::from_argb(alpha, red, green, blue));
+                    return Ok(skia::Color::from_argb(alpha, red, green, blue));
                 }
 
-                Ok(skia_safe::Color::from_rgb(0, 0, 0))
+                Ok(skia::Color::from_rgb(0, 0, 0))
             }
-            Color::Rgb(red, green, blue) => Ok(skia_safe::Color::from_rgb(red, green, blue)),
+            Color::Rgb(red, green, blue) => Ok(skia::Color::from_rgb(red, green, blue)),
             Color::Rgba(red, green, blue, alpha) => {
-                Ok(skia_safe::Color::from_argb(alpha, red, green, blue))
+                Ok(skia::Color::from_argb(alpha, red, green, blue))
             }
         }
     }

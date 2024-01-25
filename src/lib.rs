@@ -19,7 +19,7 @@ use std::{ffi::CString, num::NonZeroU32};
 use winit::{
     dpi::LogicalSize,
     event::{Event, KeyEvent, Modifiers, WindowEvent},
-    event_loop::EventLoop,
+    event_loop::{EventLoop, EventLoopWindowTarget},
     window::{Window, WindowBuilder},
 };
 
@@ -35,17 +35,14 @@ pub struct Volt {
     gl_surface: GlutinSurface<WindowSurface>,
     gr_context: skia::gpu::DirectContext,
     gl_context: PossiblyCurrentContext,
+    gl_config: glutin::config::Config,
     window: Window,
     event_loop: Option<EventLoop<()>>,
+    pub components: Vec<Box<dyn ui::Component>>,
 }
 
 impl Volt {
-    pub fn new(
-        title: &str,
-        win_width: u32,
-        win_height: u32,
-        fill: skia::Color,
-    ) -> anyhow::Result<Self> {
+    pub fn new(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<Self> {
         let event_loop = EventLoop::new()?;
         let winit_window_builder = WindowBuilder::new()
             .with_title(title)
@@ -157,60 +154,87 @@ impl Volt {
             modifiers,
             paint,
             event_loop: Some(event_loop),
+            components: Vec::new(),
+            gl_config,
         })
     }
+
     pub fn run(mut self) -> anyhow::Result<()> {
         let event_loop = self.event_loop.take().unwrap();
-        event_loop.run(move |event, window_target| {
-            let mut draw_frame = false;
-
-            if let Event::WindowEvent { event, .. } = event {
-                match event {
-                    WindowEvent::CloseRequested => {
-                        window_target.exit();
-                        return;
-                    }
-                    WindowEvent::ModifiersChanged(new_modifiers) => self.modifiers = new_modifiers,
-                    WindowEvent::KeyboardInput {
-                        event: KeyEvent { logical_key, .. },
-                        ..
-                    } => {
-                        if self.modifiers.state().super_key() && logical_key == "q" {
-                            window_target.exit();
-                        }
-                        self.window.request_redraw();
-                    }
-                    WindowEvent::RedrawRequested => {
-                        draw_frame = true;
-                    }
-                    _ => (),
-                }
-            }
-            if draw_frame {
-                let canvas = self.surface.canvas();
-                canvas.clear(Color::from_rgb(30, 29, 45));
-                let mut button = crate::ui::button::Button {
-                    text: "Something",
-                    position: (10.0, 10.0),
-                    size: (200.0, 50.0),
-                    color: crate::ui::Color::Hex("#cdd6f4".to_string()).into().unwrap(),
-                    radius: 10.0,
-                    border_width: 0.0,
-                    border_color: skia::Color::RED,
-                    text_color: skia::Color::RED,
-                    font_size: 27.0,
-                    font_family: "JetBrains Mono",
-                    font_weight: font_style::Weight::BOLD,
-                    font_style: font_style::Slant::Italic,
-                };
-                button.set_text("hello");
-                button.render(canvas, &mut self.paint);
-                self.gr_context.flush_and_submit();
-                self.gl_surface.swap_buffers(&self.gl_context).unwrap();
-            }
-        })?;
-
+        event_loop.run(move |event, window_target| self.handle_events(event, window_target))?;
         Ok(())
+    }
+
+    pub fn handle_events(&mut self, event: Event<()>, window_target: &EventLoopWindowTarget<()>) {
+        if let Event::WindowEvent { event, .. } = event {
+            match event {
+                WindowEvent::CloseRequested => {
+                    window_target.exit();
+                    return;
+                }
+                WindowEvent::ModifiersChanged(new_modifiers) => self.modifiers = new_modifiers,
+                WindowEvent::KeyboardInput {
+                    event: KeyEvent { logical_key, .. },
+                    ..
+                } => {
+                    if self.modifiers.state().super_key() && logical_key == "q" {
+                        window_target.exit();
+                    }
+                    self.window.request_redraw();
+                }
+                WindowEvent::Resized(physical_size) => {
+                    let fb_info = {
+                        let mut fboid: GLint = 0;
+                        unsafe { gl::GetIntegerv(gl::FRAMEBUFFER_BINDING, &mut fboid) };
+
+                        FramebufferInfo {
+                            fboid: fboid.try_into().unwrap(),
+                            format: skia::gpu::gl::Format::RGBA8.into(),
+                            ..Default::default()
+                        }
+                    };
+                    self.surface = Self::create_surface(
+                        &self.window,
+                        fb_info,
+                        &mut self.gr_context,
+                        self.gl_config.num_samples() as usize,
+                        self.gl_config.stencil_size() as usize,
+                    );
+                    let (width, height): (u32, u32) = physical_size.into();
+
+                    self.gl_surface.resize(
+                        &self.gl_context,
+                        NonZeroU32::new(width.max(1)).unwrap(),
+                        NonZeroU32::new(height.max(1)).unwrap(),
+                    );
+                }
+                WindowEvent::RedrawRequested => self.draw(),
+                _ => (),
+            }
+        }
+    }
+
+    pub fn draw(&mut self) {
+        let canvas = self.surface.canvas();
+        canvas.clear(Color::from_rgb(30, 29, 45));
+        let mut button = crate::ui::button::Button {
+            text: "Something",
+            position: (10.0, 10.0),
+            size: (200.0, 50.0),
+            color: crate::ui::Color::Hex("#cdd6f4".to_string()).into().unwrap(),
+            radius: 10.0,
+            border_width: 0.0,
+            border_color: skia::Color::RED,
+            text_color: skia::Color::RED,
+            font_size: 27.0,
+            font_family: "JetBrains Mono",
+            font_weight: font_style::Weight::BOLD,
+            font_style: font_style::Slant::Italic,
+        };
+        button.set_text("hello");
+        button.render(canvas, &mut self.paint);
+        self.gr_context.flush_and_submit();
+        self.gl_surface.swap_buffers(&self.gl_context).unwrap();
     }
     pub fn create_surface(
         window: &Window,

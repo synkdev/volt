@@ -1,5 +1,5 @@
-use volt::run;
+use volt::Volt;
 
 fn main() {
-    run("Hello World!", 1200, 900).unwrap();
+    let volt = Volt::new("Hello World!", 1200, 900).unwrap().run();
 }

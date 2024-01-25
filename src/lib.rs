@@ -217,25 +217,33 @@ impl Volt {
     pub fn draw(&mut self) {
         let canvas = self.surface.canvas();
         canvas.clear(Color::from_rgb(30, 29, 45));
-        let mut button = crate::ui::button::Button {
-            text: "Something",
-            position: (10.0, 10.0),
-            size: (200.0, 50.0),
-            color: crate::ui::Color::Hex("#cdd6f4".to_string()).into().unwrap(),
-            radius: 10.0,
-            border_width: 0.0,
-            border_color: skia::Color::RED,
-            text_color: skia::Color::RED,
-            font_size: 27.0,
-            font_family: "JetBrains Mono",
-            font_weight: font_style::Weight::BOLD,
-            font_style: font_style::Slant::Italic,
-        };
-        button.set_text("hello");
-        button.render(canvas, &mut self.paint);
+        // let mut button = crate::ui::button::Button {
+        //     text: "Something",
+        //     position: (10.0, 10.0),
+        //     size: (200.0, 50.0),
+        //     color: crate::ui::Color::Hex("#cdd6f4".to_string()).into().unwrap(),
+        //     radius: 10.0,
+        //     border_width: 0.0,
+        //     border_color: skia::Color::RED,
+        //     text_color: skia::Color::RED,
+        //     font_size: 27.0,
+        //     font_family: "JetBrains Mono",
+        //     font_weight: font_style::Weight::BOLD,
+        //     font_style: font_style::Slant::Italic,
+        // };
+        // button.set_text("hello");
+        // button.render(canvas, &mut self.paint);
+        for component in &self.components {
+            component.render(canvas, &mut self.paint)
+        }
         self.gr_context.flush_and_submit();
         self.gl_surface.swap_buffers(&self.gl_context).unwrap();
     }
+
+    pub fn add(&mut self, component: Box<dyn Component>) {
+        self.components.push(component);
+    }
+
     pub fn create_surface(
         window: &Window,
         fb_info: FramebufferInfo,

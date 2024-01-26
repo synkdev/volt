@@ -1,5 +1,6 @@
 pub mod ui;
 
+use crate::ui::Component;
 use gl::types::*;
 use gl_rs as gl;
 use glutin::{
@@ -15,7 +16,7 @@ use skia::{
     gpu::{self, backend_render_targets, gl::FramebufferInfo, SurfaceOrigin},
     Color, ColorType, Surface,
 };
-use std::{ffi::CString, num::NonZeroU32};
+use std::{cell::RefCell, ffi::CString, num::NonZeroU32, rc::Rc};
 use winit::{
     dpi::LogicalSize,
     event::{Event, KeyEvent, Modifiers, WindowEvent},
@@ -26,9 +27,11 @@ use winit::{
 // Re-exports
 pub use skia::font_style;
 
-use crate::ui::Component;
-
 pub struct Volt {
+    app: RefCell<Rc<Context>>,
+}
+
+pub struct Context {
     modifiers: Modifiers,
     paint: skia::Paint,
     surface: Surface,
@@ -42,12 +45,26 @@ pub struct Volt {
 }
 
 impl Volt {
-    pub fn new(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<Self> {
+    pub fn new() -> Self {
+        Volt {
+            app: RefCell::new(Rc::new(Context::new().unwrap())),
+        }
+    }
+    pub fn run<F>(self, mut callback: F)
+    where
+        F: FnMut(&mut Context),
+    {
+        let this = self.app.clone();
+        callback(cx)
+    }
+}
+
+impl Context {
+    pub fn new() -> anyhow::Result<Self> {
         let event_loop = EventLoop::new()?;
         event_loop.set_control_flow(winit::event_loop::ControlFlow::Wait);
-        let winit_window_builder = WindowBuilder::new()
-            .with_title(title)
-            .with_inner_size(LogicalSize::new(win_width, win_height));
+        let winit_window_builder =
+            WindowBuilder::new().with_inner_size(LogicalSize::new(1200, 700));
         let template = ConfigTemplateBuilder::new()
             .with_alpha_size(8)
             .with_transparency(true);
@@ -146,7 +163,7 @@ impl Volt {
         let modifiers = Modifiers::default();
         let paint = skia::Paint::default();
 
-        Ok(Volt {
+        Ok(Context {
             surface,
             gl_surface,
             gl_context,

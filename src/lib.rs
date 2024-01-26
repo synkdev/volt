@@ -44,6 +44,7 @@ pub struct Volt {
 impl Volt {
     pub fn new(title: &str, win_width: u32, win_height: u32) -> anyhow::Result<Self> {
         let event_loop = EventLoop::new()?;
+        event_loop.set_control_flow(winit::event_loop::ControlFlow::Wait);
         let winit_window_builder = WindowBuilder::new()
             .with_title(title)
             .with_inner_size(LogicalSize::new(win_width, win_height));
@@ -142,8 +143,8 @@ impl Volt {
         let surface =
             Self::create_surface(&window, fb_info, &mut gr_context, num_samples, stencil_size);
 
-        let mut modifiers = Modifiers::default();
-        let mut paint = skia::Paint::default();
+        let modifiers = Modifiers::default();
+        let paint = skia::Paint::default();
 
         Ok(Volt {
             surface,
@@ -159,7 +160,7 @@ impl Volt {
         })
     }
 
-    pub fn run(mut self) -> anyhow::Result<()> {
+    pub fn run(&mut self) -> anyhow::Result<()> {
         let event_loop = self.event_loop.take().unwrap();
         event_loop.run(move |event, window_target| self.handle_events(event, window_target))?;
         Ok(())
@@ -231,8 +232,9 @@ impl Volt {
         //     font_weight: font_style::Weight::BOLD,
         //     font_style: font_style::Slant::Italic,
         // };
-        // button.set_text("hello");
-        // button.render(canvas, &mut self.paint);
+        let mut button = crate::ui::button::Button::new();
+        button.set_text("hello");
+        button.render(canvas, &mut self.paint);
         for component in &self.components {
             component.render(canvas, &mut self.paint)
         }
@@ -242,6 +244,7 @@ impl Volt {
 
     pub fn add(&mut self, component: Box<dyn Component>) {
         self.components.push(component);
+        self.draw();
     }
 
     pub fn create_surface(

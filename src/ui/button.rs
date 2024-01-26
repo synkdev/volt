@@ -58,6 +58,28 @@ impl Component for Button {
 }
 
 impl Button {
+    pub fn new() -> Box<Button> {
+        Box::new(Button {
+            text: "Button",
+            size: (200.0, 50.0),
+            position: (0.0, 0.0),
+            color: crate::ui::color::Color::Hex("#313244".to_string())
+                .into()
+                .unwrap(),
+            radius: 10.0,
+            font_size: 16.0,
+            text_color: crate::ui::color::Color::Hex("#f38ba8".to_string())
+                .into()
+                .unwrap(),
+            border_color: crate::ui::color::Color::Hex("#f38ba8".to_string())
+                .into()
+                .unwrap(),
+            border_width: 2.0,
+            font_style: crate::font_style::Slant::Upright,
+            font_weight: crate::font_style::Weight::NORMAL,
+            font_family: "JetBrains Mono",
+        })
+    }
     pub fn set_text(&mut self, text: &'static str) {
         self.text = text;
     }

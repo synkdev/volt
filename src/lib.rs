@@ -6,7 +6,7 @@ use gl_rs as gl;
 use glutin::{
     config::{ConfigTemplateBuilder, GlConfig},
     context::{ContextApi, ContextAttributesBuilder, PossiblyCurrentContext},
-    display::{Display, GetGlDisplay, GlDisplay},
+    display::{GetGlDisplay, GlDisplay},
     prelude::{GlSurface, NotCurrentGlContext},
     surface::{Surface as GlutinSurface, SurfaceAttributesBuilder, WindowSurface},
 };
@@ -17,15 +17,21 @@ use skia::{
     Color, ColorType, Surface,
 };
 use std::{cell::RefCell, ffi::CString, num::NonZeroU32, rc::Rc};
+// use tokio::sync::mpsc;
+// use tokio::task::spawn;
 use winit::{
     dpi::LogicalSize,
     event::{Event, KeyEvent, Modifiers, WindowEvent},
-    event_loop::{EventLoop, EventLoopWindowTarget},
+    event_loop::{EventLoop, EventLoopBuilder, EventLoopProxy, EventLoopWindowTarget},
     window::{Window, WindowBuilder},
 };
 
 // Re-exports
 pub use skia::font_style;
+
+pub enum EventLoopMsg {
+    InputEvent(winit::event::Event<()>),
+}
 
 pub struct Volt {
     app: RefCell<Rc<Context>>,
@@ -40,7 +46,9 @@ pub struct Context {
     gl_context: PossiblyCurrentContext,
     gl_config: glutin::config::Config,
     window: Window,
-    event_loop: Option<EventLoop<()>>,
+    // el_sender: mpsc::Sender<EventLoopMsg>,
+    event_loop: Option<EventLoop<EventLoopMsg>>,
+    proxy: Option<EventLoopProxy<EventLoopMsg>>,
     pub components: Vec<Box<dyn ui::Component>>,
 }
 
@@ -50,18 +58,19 @@ impl Volt {
             app: RefCell::new(Rc::new(Context::new().unwrap())),
         }
     }
+
     pub fn run<F>(self, mut callback: F)
     where
         F: FnMut(&mut Context),
     {
         let this = self.app.clone();
-        callback(cx)
     }
 }
 
 impl Context {
     pub fn new() -> anyhow::Result<Self> {
-        let event_loop = EventLoop::new()?;
+        let event_loop = EventLoopBuilder::<EventLoopMsg>::with_user_event().build()?;
+        let proxy = event_loop.create_proxy();
         event_loop.set_control_flow(winit::event_loop::ControlFlow::Wait);
         let winit_window_builder =
             WindowBuilder::new().with_inner_size(LogicalSize::new(1200, 700));
@@ -174,16 +183,31 @@ impl Context {
             event_loop: Some(event_loop),
             components: Vec::new(),
             gl_config,
+            proxy: Some(proxy),
         })
     }
 
     pub fn run(&mut self) -> anyhow::Result<()> {
+        let rt = tokio::runtime::Builder::new_multi_thread()
+            .enable_all()
+            .build()
+            .unwrap();
+
+        let _guard = rt.enter();
         let event_loop = self.event_loop.take().unwrap();
-        event_loop.run(move |event, window_target| self.handle_events(event, window_target))?;
+        std::thread::spawn(move || {
+            event_loop
+                .run(move |event, window_target| self.handle_events(event, window_target))
+                .unwrap();
+        });
         Ok(())
     }
 
-    pub fn handle_events(&mut self, event: Event<()>, window_target: &EventLoopWindowTarget<()>) {
+    pub fn handle_events(
+        &mut self,
+        event: Event<EventLoopMsg>,
+        window_target: &EventLoopWindowTarget<EventLoopMsg>,
+    ) {
         if let Event::WindowEvent { event, .. } = event {
             match event {
                 WindowEvent::CloseRequested => {

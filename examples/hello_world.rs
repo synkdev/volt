@@ -1,7 +1,8 @@
-use volt::Volt;
+use volt::Context;
 
 fn main() {
-    let mut volt = Volt::new("Hello World!", 1200, 900).unwrap();
+    let mut volt = Context::new().unwrap();
     volt.add(volt::ui::button::Button::new());
     volt.run().unwrap();
+    println!("hello");
 }

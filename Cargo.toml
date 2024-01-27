@@ -12,4 +12,5 @@ glutin = "0.31.2"
 glutin-winit = "0.4.2"
 raw-window-handle = "0.5.0"
 skia = { package = "skia-safe", version = "0.70.0", features = ["gl", "wayland", "shaper", "textlayout", "svg"] }
+tokio = { version = "1.35.1", features = ["full"] }
 winit = "0.29.10"

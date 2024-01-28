@@ -1,5 +1,7 @@
 use crate::ui::Component;
 
+use super::Clickable;
+
 pub struct Button {
     pub text: &'static str,
     pub position: (f32, f32),
@@ -62,6 +64,12 @@ impl Component for Button {
     }
 }
 
+impl Clickable for Button {
+    fn on_click(&mut self) {
+        (self.on_click)(self)
+    }
+}
+
 impl Button {
     pub fn new() -> Self {
         Button {
@@ -107,9 +115,9 @@ impl ButtonBuilder {
 
     pub fn on_click<F>(mut self, callback: F) -> Self
     where
-        F: FnOnce(&mut Self),
+        F: FnOnce(&mut Button),
     {
-        self.on_click = Box::new(callback);
+        self.button.on_click = Box::new(callback);
         self
     }
 

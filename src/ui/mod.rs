@@ -8,5 +8,5 @@ pub trait Component {
 }
 
 pub trait Clickable {
-    fn on_click(&self);
+    fn on_click(&mut self);
 }

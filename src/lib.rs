@@ -199,6 +199,7 @@ impl Context {
                     return;
                 }
                 WindowEvent::ModifiersChanged(new_modifiers) => self.modifiers = new_modifiers,
+                WindowEvent::MouseInput { state, button, .. } => {}
                 WindowEvent::KeyboardInput {
                     event: KeyEvent { logical_key, .. },
                     ..

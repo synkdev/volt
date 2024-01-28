@@ -14,14 +14,14 @@ use glutin_winit::DisplayBuilder;
 use raw_window_handle::HasRawWindowHandle;
 use skia::{
     gpu::{self, backend_render_targets, gl::FramebufferInfo, SurfaceOrigin},
-    Color, ColorType, Surface,
+    Color, ColorType, Contains, Surface,
 };
 use std::{cell::RefCell, ffi::CString, num::NonZeroU32, rc::Rc};
 // use tokio::sync::mpsc;
 // use tokio::task::spawn;
 use winit::{
     dpi::LogicalSize,
-    event::{Event, KeyEvent, Modifiers, WindowEvent},
+    event::{Event, KeyEvent, Modifiers, MouseButton, WindowEvent},
     event_loop::{EventLoop, EventLoopWindowTarget},
     window::{Window, WindowBuilder},
 };
@@ -187,32 +187,45 @@ impl Context {
 
     pub fn run(&mut self) -> anyhow::Result<()> {
         let event_loop = self.event_loop.take().unwrap();
-        event_loop.run(move |event, window_target| self.handle_events(event, window_target))?;
+        let mut cursor_pos = (0.0_f32, 0.0_f32);
+
+        event_loop.run(move |event, window_target| {
+            self.handle_events(event, window_target, &mut cursor_pos)
+        })?;
         Ok(())
     }
 
-    pub fn handle_events(&mut self, event: Event<()>, window_target: &EventLoopWindowTarget<()>) {
-        if let Event::WindowEvent { event, .. } = event {
-            match event {
+    pub fn process_click(&mut self, button: MouseButton, position: (f32, f32)) {
+        if button == MouseButton::Left {
+            for component in &mut self.components.iter_mut() {
+                let rect = component.get_bounds();
+                if rect.contains(skia::Point::from(position)) {
+                    component.on_click();
+                }
+            }
+        } else {
+        }
+    }
+
+    pub fn handle_events(
+        &mut self,
+        main_event: Event<()>,
+        window_target: &EventLoopWindowTarget<()>,
+        cursor_pos: &mut (f32, f32),
+    ) {
+        match main_event {
+            Event::WindowEvent { event, .. } => match event {
+                WindowEvent::CursorMoved { position, .. } => {
+                    *cursor_pos = (position.x as f32, position.y as f32);
+                }
                 WindowEvent::CloseRequested => {
                     window_target.exit();
                     return;
                 }
                 WindowEvent::ModifiersChanged(new_modifiers) => self.modifiers = new_modifiers,
                 WindowEvent::MouseInput { state, button, .. } => {
-                    if state.is_pressed() && button == winit::event::MouseButton::Left {
-                        let clickable_components: Vec<Box<dyn Clickable>> = self
-                            .components
-                            .iter()
-                            .filter_map(|component| {
-                                component.as_ref().downcast_ref::<dyn Clickable>()
-                            })
-                            .collect();
-
-                        // Use the found clickable components
-                        for clickable in clickable_components {
-                            clickable.click();
-                        }
+                    if state.is_pressed() {
+                        self.process_click(button, *cursor_pos)
                     }
                 }
                 WindowEvent::KeyboardInput {
@@ -252,7 +265,8 @@ impl Context {
                 }
                 WindowEvent::RedrawRequested => self.draw(),
                 _ => (),
-            }
+            },
+            _ => (),
         }
     }
 

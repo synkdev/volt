@@ -2,11 +2,10 @@ pub mod button;
 pub mod color;
 
 pub use color::Color;
+use std::any::Any;
 
-pub trait Component {
+pub trait Component: Any {
     fn render(&self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint);
-}
-
-pub trait Clickable {
-    fn on_click(&mut self);
+    fn on_click(&self);
+    fn get_bounds(&self) -> skia::Rect;
 }

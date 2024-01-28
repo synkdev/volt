@@ -1,8 +1,8 @@
+use skia::Contains;
+
 use crate::font_style;
 use crate::ui::Color::Hex;
 use crate::ui::Component;
-
-use super::Clickable;
 
 pub struct Button {
     pub text: &'static str,
@@ -17,7 +17,7 @@ pub struct Button {
     pub font_family: &'static str,
     pub font_weight: skia::font_style::Weight,
     pub font_style: skia::font_style::Slant,
-    pub on_click: Box<dyn FnOnce(&mut Self)>,
+    pub on_click: Box<dyn Fn()>,
 }
 
 pub struct ButtonBuilder {
@@ -64,11 +64,11 @@ impl Component for Button {
         let text_y = rect.center_y() + text_offset;
         canvas.draw_text_blob(text, (text_x, text_y), &paint);
     }
-}
-
-impl Clickable for Button {
-    fn on_click(&mut self) {
-        (self.on_click)(self)
+    fn on_click(&self) {
+        (self.on_click)()
+    }
+    fn get_bounds(&self) -> skia::Rect {
+        skia::Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1)
     }
 }
 
@@ -87,7 +87,7 @@ impl Button {
             font_style: font_style::Slant::Upright,
             font_weight: font_style::Weight::NORMAL,
             font_family: "JetBrains Mono",
-            on_click: Box::new(|_| {}),
+            on_click: Box::new(|| {}),
         }
     }
 }
@@ -111,7 +111,7 @@ impl ButtonBuilder {
 
     pub fn on_click<F>(mut self, callback: F) -> Self
     where
-        F: FnOnce(&mut Button),
+        F: Fn() + 'static,
     {
         self.button.on_click = Box::new(callback);
         self

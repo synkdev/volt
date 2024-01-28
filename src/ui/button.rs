@@ -4,6 +4,7 @@ use crate::font_style;
 use crate::ui::Color::Hex;
 use crate::ui::Component;
 
+#[derive(Clone, Copy)]
 pub struct Button {
     pub text: &'static str,
     pub position: (f32, f32),
@@ -17,7 +18,8 @@ pub struct Button {
     pub font_family: &'static str,
     pub font_weight: skia::font_style::Weight,
     pub font_style: skia::font_style::Slant,
-    pub on_click: Box<dyn Fn()>,
+    pub on_click: fn(),
+    pub on_hover: fn(&Self),
 }
 
 pub struct ButtonBuilder {
@@ -67,6 +69,9 @@ impl Component for Button {
     fn on_click(&self) {
         (self.on_click)()
     }
+    fn on_hover(&mut self) {
+        (self.on_hover)(self)
+    }
     fn get_bounds(&self) -> skia::Rect {
         skia::Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1)
     }
@@ -81,13 +86,14 @@ impl Button {
             color: Hex("#313244").into().unwrap(),
             radius: 10.0,
             font_size: 16.0,
-            text_color: Hex("#f38ba8").into().unwrap(),
+            text_color: Hex("#cdd6f4").into().unwrap(),
             border_color: Hex("#f38ba8").into().unwrap(),
             border_width: 2.0,
             font_style: font_style::Slant::Upright,
             font_weight: font_style::Weight::NORMAL,
             font_family: "JetBrains Mono",
-            on_click: Box::new(|| {}),
+            on_click: || {},
+            on_hover: |_| {},
         }
     }
 }
@@ -109,11 +115,8 @@ impl ButtonBuilder {
         self
     }
 
-    pub fn on_click<F>(mut self, callback: F) -> Self
-    where
-        F: Fn() + 'static,
-    {
-        self.button.on_click = Box::new(callback);
+    pub fn on_click(mut self, callback: fn()) -> Self {
+        self.button.on_click = callback;
         self
     }
 

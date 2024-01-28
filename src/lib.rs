@@ -204,6 +204,7 @@ impl Context {
                 None => return,
             }
         }
+        self.draw();
     }
 
     pub fn process_hover_enter(&mut self, position: (f32, f32)) {

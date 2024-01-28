@@ -1,8 +1,14 @@
-use volt::Context;
+use volt::{ui::button::ButtonBuilder, Volt};
 
 fn main() {
-    let mut volt = Context::new().unwrap();
-    volt.add(volt::ui::button::Button::new());
-    volt.run().unwrap();
-    println!("hello");
+    Volt::new().run(|cx| {
+        cx.add(ButtonBuilder::new().into());
+        cx.add(
+            ButtonBuilder::new()
+                .text("hello")
+                .position(200.0, 200.0)
+                .into(),
+        );
+        // somth
+    });
 }

@@ -15,6 +15,10 @@ pub struct Button {
     pub font_style: skia::font_style::Slant,
 }
 
+pub struct ButtonBuilder {
+    pub button: Box<Button>,
+}
+
 impl Component for Button {
     fn render(&self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint) {
         let rect =
@@ -58,8 +62,8 @@ impl Component for Button {
 }
 
 impl Button {
-    pub fn new() -> Box<Button> {
-        Box::new(Button {
+    pub fn new() -> Self {
+        Button {
             text: "Button",
             size: (200.0, 50.0),
             position: (0.0, 0.0),
@@ -78,9 +82,28 @@ impl Button {
             font_style: crate::font_style::Slant::Upright,
             font_weight: crate::font_style::Weight::NORMAL,
             font_family: "JetBrains Mono",
-        })
+        }
     }
-    pub fn set_text(&mut self, text: &'static str) {
-        self.text = text;
+}
+
+impl ButtonBuilder {
+    pub fn new() -> Self {
+        ButtonBuilder {
+            button: Box::new(Button::new()),
+        }
+    }
+
+    pub fn text(mut self, text: &'static str) -> Self {
+        self.button.text = text;
+        self
+    }
+
+    pub fn position(mut self, x: f32, y: f32) -> Self {
+        self.button.position = (x, y);
+        self
+    }
+
+    pub fn into(self) -> Box<Button> {
+        self.button
     }
 }

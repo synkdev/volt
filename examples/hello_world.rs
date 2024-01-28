@@ -2,7 +2,11 @@ use volt::{ui::button::ButtonBuilder, Volt};
 
 fn main() {
     Volt::new().run(|cx| {
-        // cx.add(ButtonBuilder::new().into());
+        cx.add(
+            ButtonBuilder::new()
+                .on_click(|| println!("it werks"))
+                .into(),
+        );
         cx.add(
             ButtonBuilder::new()
                 .text("hello")

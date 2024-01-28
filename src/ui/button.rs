@@ -19,7 +19,7 @@ pub struct Button {
     pub font_weight: skia::font_style::Weight,
     pub font_style: skia::font_style::Slant,
     pub on_click: fn(),
-    pub on_hover: fn(&Self),
+    pub on_hover: fn(&mut Self),
 }
 
 pub struct ButtonBuilder {
@@ -117,6 +117,11 @@ impl ButtonBuilder {
 
     pub fn on_click(mut self, callback: fn()) -> Self {
         self.button.on_click = callback;
+        self
+    }
+
+    pub fn on_hover_enter(mut self, callback: fn(&mut Button)) -> Self {
+        self.button.on_hover = callback;
         self
     }
 

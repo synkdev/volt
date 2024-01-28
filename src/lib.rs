@@ -206,6 +206,13 @@ impl Context {
         }
     }
 
+    pub fn process_hover_enter(&mut self, position: (f32, f32)) {
+        match active_element(&mut self.components, position) {
+            Some(component) => component.on_hover(),
+            None => return,
+        }
+    }
+
     pub fn handle_events(
         &mut self,
         main_event: Event<()>,
@@ -216,6 +223,7 @@ impl Context {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::CursorMoved { position, .. } => {
                     *cursor_pos = (position.x as f32, position.y as f32);
+                    self.process_hover_enter(*cursor_pos);
                 }
                 WindowEvent::CloseRequested => {
                     window_target.exit();

@@ -13,6 +13,7 @@ pub struct Button {
     pub font_family: &'static str,
     pub font_weight: skia::font_style::Weight,
     pub font_style: skia::font_style::Slant,
+    pub on_click: Box<dyn FnOnce(&mut Self)>,
 }
 
 pub struct ButtonBuilder {
@@ -82,6 +83,7 @@ impl Button {
             font_style: crate::font_style::Slant::Upright,
             font_weight: crate::font_style::Weight::NORMAL,
             font_family: "JetBrains Mono",
+            on_click: Box::new(|_| {}),
         }
     }
 }
@@ -100,6 +102,14 @@ impl ButtonBuilder {
 
     pub fn position(mut self, x: f32, y: f32) -> Self {
         self.button.position = (x, y);
+        self
+    }
+
+    pub fn on_click<F>(mut self, callback: F) -> Self
+    where
+        F: FnOnce(&mut Self),
+    {
+        self.on_click = Box::new(callback);
         self
     }
 

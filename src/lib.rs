@@ -199,7 +199,22 @@ impl Context {
                     return;
                 }
                 WindowEvent::ModifiersChanged(new_modifiers) => self.modifiers = new_modifiers,
-                WindowEvent::MouseInput { state, button, .. } => {}
+                WindowEvent::MouseInput { state, button, .. } => {
+                    if state.is_pressed() && button == winit::event::MouseButton::Left {
+                        let clickable_components: Vec<Box<dyn Clickable>> = self
+                            .components
+                            .iter()
+                            .filter_map(|component| {
+                                component.as_ref().downcast_ref::<dyn Clickable>()
+                            })
+                            .collect();
+
+                        // Use the found clickable components
+                        for clickable in clickable_components {
+                            clickable.click();
+                        }
+                    }
+                }
                 WindowEvent::KeyboardInput {
                     event: KeyEvent { logical_key, .. },
                     ..

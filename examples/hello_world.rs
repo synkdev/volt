@@ -1,4 +1,7 @@
-use volt::{ui::button::ButtonBuilder, Volt};
+use volt::{
+    ui::{button::ButtonBuilder, Color},
+    Volt,
+};
 
 fn main() {
     Volt::new().run(|cx| {
@@ -12,6 +15,7 @@ fn main() {
                 .text("hello")
                 .position(200.0, 200.0)
                 .on_click(|| println!("hello"))
+                .on_hover_enter(|btn| btn.fill = Color::Hex("#b4befe").into().unwrap())
                 .into(),
         );
         // somth

@@ -10,10 +10,10 @@ pub struct Button {
     pub position: (f32, f32),
     pub size: (f32, f32),
     pub color: skia::Color,
+    pub fill: skia::Color,
     pub radius: f32,
     pub border_width: f32,
     pub border_color: skia::Color,
-    pub text_color: skia::Color,
     pub font_size: f32,
     pub font_family: &'static str,
     pub font_weight: skia::font_style::Weight,
@@ -34,7 +34,7 @@ impl Component for Button {
         paint.set_anti_alias(true);
 
         // Draw button box
-        paint.set_color(self.color);
+        paint.set_color(self.fill);
         paint.set_style(skia::PaintStyle::Fill);
 
         canvas.draw_round_rect(rect, self.radius, self.radius, &paint);
@@ -47,7 +47,7 @@ impl Component for Button {
         canvas.draw_round_rect(rect, self.radius, self.radius, &paint);
 
         // Draw text
-        paint.set_color(self.text_color);
+        paint.set_color(self.color);
         paint.set_style(skia::PaintStyle::Fill);
         let font_style = skia::font_style::FontStyle::new(
             self.font_weight,
@@ -83,10 +83,10 @@ impl Button {
             text: "Button",
             size: (200.0, 50.0),
             position: (0.0, 0.0),
-            color: Hex("#313244").into().unwrap(),
+            fill: Hex("#313244").into().unwrap(),
             radius: 10.0,
             font_size: 16.0,
-            text_color: Hex("#cdd6f4").into().unwrap(),
+            color: Hex("#cdd6f4").into().unwrap(),
             border_color: Hex("#f38ba8").into().unwrap(),
             border_width: 2.0,
             font_style: font_style::Slant::Upright,

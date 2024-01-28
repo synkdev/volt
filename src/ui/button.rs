@@ -1,3 +1,5 @@
+use crate::font_style;
+use crate::ui::Color::Hex;
 use crate::ui::Component;
 
 use super::Clickable;
@@ -76,20 +78,14 @@ impl Button {
             text: "Button",
             size: (200.0, 50.0),
             position: (0.0, 0.0),
-            color: crate::ui::color::Color::Hex("#313244".to_string())
-                .into()
-                .unwrap(),
+            color: Hex("#313244").into().unwrap(),
             radius: 10.0,
             font_size: 16.0,
-            text_color: crate::ui::color::Color::Hex("#f38ba8".to_string())
-                .into()
-                .unwrap(),
-            border_color: crate::ui::color::Color::Hex("#f38ba8".to_string())
-                .into()
-                .unwrap(),
+            text_color: Hex("#f38ba8").into().unwrap(),
+            border_color: Hex("#f38ba8").into().unwrap(),
             border_width: 2.0,
-            font_style: crate::font_style::Slant::Upright,
-            font_weight: crate::font_style::Weight::NORMAL,
+            font_style: font_style::Slant::Upright,
+            font_weight: font_style::Weight::NORMAL,
             font_family: "JetBrains Mono",
             on_click: Box::new(|_| {}),
         }

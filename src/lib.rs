@@ -1,3 +1,4 @@
+pub(crate) mod helpers;
 pub mod ui;
 
 use crate::ui::Component;
@@ -11,6 +12,7 @@ use glutin::{
     surface::{Surface as GlutinSurface, SurfaceAttributesBuilder, WindowSurface},
 };
 use glutin_winit::DisplayBuilder;
+use helpers::active_element;
 use raw_window_handle::HasRawWindowHandle;
 use skia::{
     gpu::{self, backend_render_targets, gl::FramebufferInfo, SurfaceOrigin},
@@ -197,13 +199,10 @@ impl Context {
 
     pub fn process_click(&mut self, button: MouseButton, position: (f32, f32)) {
         if button == MouseButton::Left {
-            for component in &mut self.components.iter_mut() {
-                let rect = component.get_bounds();
-                if rect.contains(skia::Point::from(position)) {
-                    component.on_click();
-                }
+            match active_element(&mut self.components, position) {
+                Some(component) => component.on_click(),
+                None => return,
             }
-        } else {
         }
     }
 

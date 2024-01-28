@@ -211,6 +211,7 @@ impl Context {
             Some(component) => component.on_hover(),
             None => return,
         }
+        self.draw();
     }
 
     pub fn handle_events(

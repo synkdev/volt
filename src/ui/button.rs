@@ -70,7 +70,7 @@ impl Component for Button {
         (self.on_click)()
     }
     fn on_hover(&mut self) {
-        (self.on_hover)(self)
+        (self.on_hover)(self);
     }
     fn get_bounds(&self) -> skia::Rect {
         skia::Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1)

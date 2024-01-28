@@ -1,12 +1,12 @@
 pub enum Color {
-    Hex(String),
+    Hex(&'static str),
     Rgba(u8, u8, u8, u8),
     Rgb(u8, u8, u8),
 }
 
 impl Color {
     pub fn default_hex() -> Self {
-        Color::Hex("#1e1d2d".to_string())
+        Color::Hex("#1e1d2d")
     }
 
     pub fn default_rgb() -> Self {
@@ -19,7 +19,7 @@ impl Color {
     pub fn into(self) -> anyhow::Result<skia::Color> {
         match self {
             Color::Hex(hex) => {
-                let hex = hex.strip_prefix("#").unwrap_or(hex.as_str());
+                let hex = hex.strip_prefix("#").unwrap_or(hex);
 
                 if hex.len() != 6 && hex.len() != 3 && hex.len() != 8 {
                     return Err(anyhow::anyhow!("Invalid length for hex color. Must be 3, 6 or 8 characters long (excluding the # symbol if any)"));

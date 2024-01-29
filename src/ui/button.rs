@@ -19,6 +19,9 @@ pub struct Button {
     pub on_click: fn(&mut Self),
     pub on_hover_enter: fn(&mut Self),
     pub on_hover_leave: fn(&mut Self),
+    pub is_dirty: bool,
+    pub is_visible: bool,
+    pub was_drawn: bool,
 }
 
 pub struct ButtonBuilder {
@@ -65,17 +68,33 @@ impl Component for Button {
         let text_y = rect.center_y() + text_offset;
         canvas.draw_text_blob(text, (text_x, text_y), &paint);
     }
+
     fn on_click(&mut self) {
         (self.on_click)(self)
     }
+
     fn on_hover_enter(&mut self) {
         (self.on_hover_enter)(self);
     }
+
     fn on_hover_leave(&mut self) {
         (self.on_hover_leave)(self);
     }
+
     fn get_bounds(&self) -> skia::Rect {
         skia::Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1)
+    }
+
+    fn is_dirty(&self) -> bool {
+        self.is_dirty
+    }
+
+    fn is_visible(&self) -> bool {
+        self.is_visible
+    }
+
+    fn was_drawn(&mut self) {
+        self.was_drawn = true
     }
 }
 
@@ -97,6 +116,9 @@ impl Button {
             on_click: |_| {},
             on_hover_enter: |_| {},
             on_hover_leave: |_| {},
+            is_dirty: true,
+            is_visible: true,
+            was_drawn: false,
         }
     }
 }

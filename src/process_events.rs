@@ -10,7 +10,7 @@ impl Context {
                 None => return,
             }
         }
-        self.draw();
+        self.render();
     }
 
     pub fn process_hover(&mut self, position: (f32, f32)) {
@@ -22,6 +22,6 @@ impl Context {
                 }
             }
         }
-        self.draw();
+        self.render();
     }
 }

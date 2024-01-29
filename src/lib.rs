@@ -247,16 +247,22 @@ impl Context {
                         NonZeroU32::new(height.max(1)).unwrap(),
                     );
                 }
-                WindowEvent::RedrawRequested => self.draw(),
+                WindowEvent::RedrawRequested => self.render(),
                 _ => (),
             },
             _ => (),
         }
     }
 
+    pub fn render(&mut self) {
+        self.start_render();
+        self.finish_render();
+    }
+
     pub fn start_render(&mut self) {
         let canvas = self.surface.canvas();
         canvas.clear(Color::from_rgb(30, 29, 45));
+        self.draw();
     }
 
     pub fn draw(&mut self) {

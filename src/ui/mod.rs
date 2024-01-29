@@ -9,5 +9,8 @@ pub trait Component: Any {
     fn on_click(&mut self);
     fn on_hover_enter(&mut self);
     fn on_hover_leave(&mut self);
+    fn is_dirty(&self) -> bool;
+    fn is_visible(&self) -> bool;
+    fn was_drawn(&mut self);
     fn get_bounds(&self) -> skia::Rect;
 }

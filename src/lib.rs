@@ -65,7 +65,7 @@ impl Volt {
 impl Context {
     pub fn new() -> anyhow::Result<Self> {
         let event_loop = EventLoop::new()?;
-        event_loop.set_control_flow(winit::event_loop::ControlFlow::Wait);
+        event_loop.set_control_flow(winit::event_loop::ControlFlow::Poll);
         let winit_window_builder =
             WindowBuilder::new().with_inner_size(LogicalSize::new(1200, 700));
         let template = ConfigTemplateBuilder::new()
@@ -268,20 +268,34 @@ impl Context {
     pub fn draw(&mut self) {
         let canvas = self.surface.canvas();
 
-        for component in self.components.iter_mut() {
-            canvas.save();
-            if component.is_dirty() && component.is_visible() {
-                println!("visible: {:?}", component.is_visible());
+        // canvas.save();
+        // for component in self.components.iter_mut() {
+        //     println!("{:?}", canvas.save_count());
+        //     if component.is_dirty() && component.is_visible() {
+        //         println!("visible: {:?}", component.is_visible());
+        //         component.render(canvas, &mut self.paint);
+        //         canvas.save();
+        //         component.was_drawn();
+        //     }
+        //     canvas.restore();
+        // }
+
+        canvas.save();
+        'elements: for component in self.components.iter_mut() {
+            if !component.is_visible() {
+                continue 'elements;
+            } else if component.is_dirty() {
                 component.render(canvas, &mut self.paint);
                 component.was_drawn();
+            } else {
             }
-            canvas.restore();
         }
+        canvas.restore();
     }
 
     pub fn finish_render(&mut self) {
-        self.gr_context.flush_and_submit();
         self.gl_surface.swap_buffers(&self.gl_context).unwrap();
+        self.gr_context.flush_and_submit();
     }
 
     pub fn add(&mut self, component: Box<dyn Component>) {

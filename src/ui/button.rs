@@ -1,5 +1,3 @@
-use skia::Contains;
-
 use crate::font_style;
 use crate::ui::Color::Hex;
 use crate::ui::Component;

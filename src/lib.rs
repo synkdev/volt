@@ -13,28 +13,21 @@ use glutin::{
     surface::{Surface as GlutinSurface, SurfaceAttributesBuilder, WindowSurface},
 };
 use glutin_winit::DisplayBuilder;
-use helpers::active_element;
 use raw_window_handle::HasRawWindowHandle;
 use skia::{
     gpu::{self, backend_render_targets, gl::FramebufferInfo, SurfaceOrigin},
-    Color, ColorType, Contains, Surface,
+    Color, ColorType, Surface,
 };
-use std::{cell::RefCell, ffi::CString, num::NonZeroU32, rc::Rc};
-// use tokio::sync::mpsc;
-// use tokio::task::spawn;
+use std::{ffi::CString, num::NonZeroU32};
 use winit::{
     dpi::LogicalSize,
-    event::{Event, KeyEvent, Modifiers, MouseButton, WindowEvent},
+    event::{Event, KeyEvent, Modifiers, WindowEvent},
     event_loop::{EventLoop, EventLoopWindowTarget},
     window::{Window, WindowBuilder},
 };
 
 // Re-exports
 pub use skia::font_style;
-
-// pub(crate) enum EventLoopMsg {
-//     InputEvent(winit::event::Event<()>),
-// }
 
 pub struct Volt {
     app: Context,
@@ -49,7 +42,6 @@ pub struct Context {
     gl_context: PossiblyCurrentContext,
     gl_config: glutin::config::Config,
     window: Window,
-    // el_sender: mpsc::Sender<EventLoopMsg>,
     event_loop: Option<EventLoop<()>>,
     pub components: Vec<Box<dyn ui::Component>>,
 }

@@ -267,10 +267,16 @@ impl Context {
 
     pub fn draw(&mut self) {
         let canvas = self.surface.canvas();
-        for component in &self.components {
-            component.render(canvas, &mut self.paint)
+
+        for component in self.components.iter_mut() {
+            canvas.save();
+            if component.is_dirty() && component.is_visible() {
+                println!("visible: {:?}", component.is_visible());
+                component.render(canvas, &mut self.paint);
+                component.was_drawn();
+            }
+            canvas.restore();
         }
-        canvas.restore();
     }
 
     pub fn finish_render(&mut self) {

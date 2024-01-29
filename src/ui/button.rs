@@ -21,7 +21,6 @@ pub struct Button {
     pub on_hover_leave: fn(&mut Self),
     pub is_dirty: bool,
     pub is_visible: bool,
-    pub was_drawn: bool,
 }
 
 pub struct ButtonBuilder {
@@ -94,7 +93,7 @@ impl Component for Button {
     }
 
     fn was_drawn(&mut self) {
-        self.was_drawn = true
+        self.is_dirty = false
     }
 }
 
@@ -118,7 +117,6 @@ impl Button {
             on_hover_leave: |_| {},
             is_dirty: true,
             is_visible: true,
-            was_drawn: false,
         }
     }
 }
@@ -132,11 +130,13 @@ impl ButtonBuilder {
 
     pub fn text(mut self, text: &'static str) -> Self {
         self.button.text = text;
+        self.button.is_dirty = true;
         self
     }
 
     pub fn position(mut self, x: f32, y: f32) -> Self {
         self.button.position = (x, y);
+        self.button.is_dirty = true;
         self
     }
 

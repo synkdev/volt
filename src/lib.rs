@@ -200,7 +200,7 @@ impl Context {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::CursorMoved { position, .. } => {
                     *cursor_pos = (position.x as f32, position.y as f32);
-                    self.process_hover_enter(*cursor_pos);
+                    self.process_hover(*cursor_pos);
                 }
                 WindowEvent::CloseRequested => {
                     window_target.exit();

@@ -13,9 +13,9 @@ impl Context {
         self.draw();
     }
 
-    pub fn process_hover_enter(&mut self, position: (f32, f32)) {
+    pub fn process_hover(&mut self, position: (f32, f32)) {
         match active_element(&mut self.components, position) {
-            Some(component) => component.on_hover(),
+            Some(component) => component.on_hover_enter(),
             None => return,
         }
         self.draw();

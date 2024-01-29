@@ -16,8 +16,9 @@ pub struct Button {
     pub font_family: &'static str,
     pub font_weight: skia::font_style::Weight,
     pub font_style: skia::font_style::Slant,
-    pub on_click: fn(),
-    pub on_hover: fn(&mut Self),
+    pub on_click: fn(&mut Self),
+    pub on_hover_enter: fn(&mut Self),
+    pub on_hover_leave: fn(&mut Self),
 }
 
 pub struct ButtonBuilder {
@@ -64,11 +65,14 @@ impl Component for Button {
         let text_y = rect.center_y() + text_offset;
         canvas.draw_text_blob(text, (text_x, text_y), &paint);
     }
-    fn on_click(&self) {
-        (self.on_click)()
+    fn on_click(&mut self) {
+        (self.on_click)(self)
     }
-    fn on_hover(&mut self) {
-        (self.on_hover)(self);
+    fn on_hover_enter(&mut self) {
+        (self.on_hover_enter)(self);
+    }
+    fn on_hover_leave(&mut self) {
+        (self.on_hover_leave)(self);
     }
     fn get_bounds(&self) -> skia::Rect {
         skia::Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1)
@@ -90,8 +94,9 @@ impl Button {
             font_style: font_style::Slant::Upright,
             font_weight: font_style::Weight::NORMAL,
             font_family: "JetBrains Mono",
-            on_click: || {},
-            on_hover: |_| {},
+            on_click: |_| {},
+            on_hover_enter: |_| {},
+            on_hover_leave: |_| {},
         }
     }
 }
@@ -113,13 +118,18 @@ impl ButtonBuilder {
         self
     }
 
-    pub fn on_click(mut self, callback: fn()) -> Self {
+    pub fn on_click(mut self, callback: fn(&mut Button)) -> Self {
         self.button.on_click = callback;
         self
     }
 
     pub fn on_hover_enter(mut self, callback: fn(&mut Button)) -> Self {
-        self.button.on_hover = callback;
+        self.button.on_hover_enter = callback;
+        self
+    }
+
+    pub fn on_hover_leave(mut self, callback: fn(&mut Button)) -> Self {
+        self.button.on_hover_leave = callback;
         self
     }
 

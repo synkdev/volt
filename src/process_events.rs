@@ -16,7 +16,11 @@ impl Context {
     pub fn process_hover(&mut self, position: (f32, f32)) {
         match active_element(&mut self.components, position) {
             Some(component) => component.on_hover_enter(),
-            None => return,
+            None => {
+                for component in &mut self.components.iter_mut() {
+                    component.on_hover_leave();
+                }
+            }
         }
         self.draw();
     }

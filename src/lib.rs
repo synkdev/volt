@@ -254,12 +254,20 @@ impl Context {
         }
     }
 
-    pub fn draw(&mut self) {
+    pub fn start_render(&mut self) {
         let canvas = self.surface.canvas();
         canvas.clear(Color::from_rgb(30, 29, 45));
+    }
+
+    pub fn draw(&mut self) {
+        let canvas = self.surface.canvas();
         for component in &self.components {
             component.render(canvas, &mut self.paint)
         }
+        canvas.restore();
+    }
+
+    pub fn finish_render(&mut self) {
         self.gr_context.flush_and_submit();
         self.gl_surface.swap_buffers(&self.gl_context).unwrap();
     }

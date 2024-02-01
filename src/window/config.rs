@@ -1,6 +1,6 @@
 use crate::window::Window;
 use glutin::{
-    context::{ContextApi, ContextAttributesBuilder, PossiblyCurrentContext},
+    context::{ContextApi, ContextAttributesBuilder, GlProfile, PossiblyCurrentContext},
     display::{GetGlDisplay, GlDisplay},
     prelude::NotCurrentGlContext,
     surface::{Surface as GlutinSurface, SurfaceAttributesBuilder, WindowSurface},
@@ -14,8 +14,11 @@ pub struct GraphicsContext {
 
 impl GraphicsContext {
     pub fn new(window: &Window) -> Self {
-        let context_attrs = ContextAttributesBuilder::new().build(Some(window.handle));
+        let context_attrs = ContextAttributesBuilder::new()
+            .with_profile(GlProfile::Core)
+            .build(Some(window.handle));
         let fallback_context_attrs = ContextAttributesBuilder::new()
+            .with_profile(GlProfile::Core)
             .with_context_api(ContextApi::Gles(None))
             .build(Some(window.handle));
 

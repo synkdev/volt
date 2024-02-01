@@ -11,7 +11,7 @@ use skia::{
         gl::{Format, FramebufferInfo, Interface},
         DirectContext, SurfaceOrigin,
     },
-    ColorType, Paint, Surface,
+    ColorType, Surface,
 };
 use std::ffi::CString;
 use winit::window::Window as WinitWindow;
@@ -19,7 +19,6 @@ use winit::window::Window as WinitWindow;
 pub struct SkiaSurface {
     pub gr_context: skia::gpu::DirectContext,
     pub surface: Surface,
-    pub paint: Paint,
 }
 
 impl SkiaSurface {
@@ -67,12 +66,9 @@ impl SkiaSurface {
             stencil_size,
         );
 
-        let paint = Paint::default();
-
         SkiaSurface {
             gr_context,
             surface,
-            paint,
         }
     }
 

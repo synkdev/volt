@@ -7,7 +7,7 @@ use crate::ui::Component;
 use gl::types::*;
 use gl_rs as gl;
 use glutin::{config::GlConfig, prelude::GlSurface};
-use skia::{gpu::gl::FramebufferInfo, Color};
+use skia::{gpu::gl::FramebufferInfo, Color, Paint};
 use std::num::NonZeroU32;
 use window::{config::GraphicsContext, surface::SkiaSurface, Window};
 use winit::{
@@ -29,6 +29,7 @@ pub struct Context {
     gr_context: GraphicsContext,
     event_loop: Option<EventLoop<()>>,
     clear: bool,
+    paint: Paint,
     pub components: Vec<Box<dyn ui::Component>>,
 }
 
@@ -57,6 +58,7 @@ impl Context {
         let surface = SkiaSurface::new(&window);
 
         let modifiers = Modifiers::default();
+        let paint = Paint::default();
 
         Ok(Context {
             event_loop: Some(event_loop),
@@ -65,6 +67,7 @@ impl Context {
             surface,
             modifiers,
             clear: true,
+            paint,
             components: Vec::new(),
         })
     }
@@ -134,8 +137,11 @@ impl Context {
                         NonZeroU32::new(width.max(1)).unwrap(),
                         NonZeroU32::new(height.max(1)).unwrap(),
                     );
+                    self.render();
                 }
-                WindowEvent::RedrawRequested => self.render(),
+                WindowEvent::RedrawRequested => {
+                    self.render();
+                }
                 _ => (),
             },
             _ => (),
@@ -148,38 +154,27 @@ impl Context {
     }
 
     pub fn start_render(&mut self) {
+        println!("called mf");
         let canvas = self.surface.surface.canvas();
         // if self.clear {
         canvas.clear(Color::from_rgb(30, 29, 45));
-        canvas.save();
-        self.clear = false;
+        // canvas.save();
+        // self.clear = false;
         // }
-        canvas.restore();
+        // canvas.restore();
         self.draw();
     }
 
     pub fn draw(&mut self) {
         let canvas = self.surface.surface.canvas();
 
-        // canvas.save();
-        // for component in self.components.iter_mut() {
-        //     println!("{:?}", canvas.save_count());
-        //     if component.is_dirty() && component.is_visible() {
-        //         println!("visible: {:?}", component.is_visible());
-        //         component.render(canvas, &mut self.paint);
-        //         canvas.save();
-        //         component.was_drawn();
-        //     }
-        //     canvas.restore();
-        // }
-
         'elements: for component in self.components.iter_mut() {
             if !component.is_visible() {
                 continue 'elements;
             } else if component.is_dirty() {
-                component.render(canvas, &mut self.surface.paint);
+                component.render(canvas, &mut self.paint);
                 canvas.save();
-                component.was_drawn();
+                // component.was_drawn();
             } else {
                 canvas.restore();
             }

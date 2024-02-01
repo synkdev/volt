@@ -34,8 +34,8 @@ impl Window {
             .with_maximized(options.maximized)
             .with_resizable(options.resizable)
             .with_decorations(options.decorations)
-            .with_window_icon(options.window_icon)
-            .with_position(LogicalPosition::new(options.position.0, options.position.1));
+            .with_position(LogicalPosition::new(options.position.0, options.position.1))
+            .with_window_icon(options.window_icon);
 
         #[allow(dead_code)]
         #[cfg(feature = "wayland")]

@@ -1,5 +1,8 @@
 use winit::window::Icon;
 
+use crate::ui::Color;
+
+#[derive(Clone)]
 pub struct WindowOptions {
     pub title: &'static str,
     pub id: Option<&'static str>,
@@ -15,6 +18,7 @@ pub struct WindowOptions {
     pub decorations: bool,
     pub window_icon: Option<Icon>,
     pub active: bool,
+    pub background: Color,
 }
 
 impl Default for WindowOptions {
@@ -34,6 +38,7 @@ impl Default for WindowOptions {
             window_icon: None,
             active: true,
             decorations: false,
+            background: Color::Hex("#1e1d2d"),
         }
     }
 }

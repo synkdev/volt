@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub enum Color {
     Hex(&'static str),
     Rgba(u8, u8, u8, u8),

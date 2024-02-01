@@ -6,11 +6,13 @@ use volt::{
 fn main() {
     Volt::new().run(|cx| {
         cx.add(
+            "werks_btn",
             ButtonBuilder::new()
                 .on_click(|_| println!("it werks"))
                 .into(),
         );
         cx.add(
+            "hello_btn",
             ButtonBuilder::new()
                 .text("hello")
                 .position(200.0, 200.0)

@@ -4,11 +4,12 @@ use glutin::{config::GlConfig, prelude::GlSurface};
 use skia::gpu::gl::FramebufferInfo;
 use std::num::NonZeroU32;
 use winit::{
-    event::{Event, KeyEvent, WindowEvent},
+    event::{Event, KeyEvent, MouseButton, WindowEvent},
     event_loop::EventLoopWindowTarget,
 };
 
 use super::Context;
+use crate::helpers::active_element;
 
 impl Context {
     pub fn process_click(&mut self, button: MouseButton, position: (f32, f32)) {
@@ -25,7 +26,7 @@ impl Context {
         match active_element(&mut self.components, position) {
             Some(component) => component.on_hover_enter(),
             None => {
-                for component in &mut self.components.iter_mut() {
+                for (_, component) in &mut self.components.iter_mut() {
                     component.on_hover_leave();
                 }
             }

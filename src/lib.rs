@@ -1,6 +1,5 @@
 pub(crate) mod context;
 pub(crate) mod helpers;
-pub(crate) mod process_events;
 pub mod ui;
 pub(crate) mod window;
 

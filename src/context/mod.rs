@@ -46,6 +46,11 @@ impl Context {
         })
     }
 
+    pub fn add(&mut self, id: &'static str, component: Box<dyn Component>) {
+        self.components.insert(id.to_string(), component);
+        self.draw();
+    }
+
     pub fn run(&mut self) -> anyhow::Result<()> {
         let event_loop = self.event_loop.take().unwrap();
         let mut cursor_pos = (0.0_f32, 0.0_f32);

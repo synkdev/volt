@@ -22,6 +22,6 @@ impl Context {
                 }
             }
         }
-        self.render();
+        // self.render();
     }
 }

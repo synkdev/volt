@@ -21,6 +21,75 @@ impl Volt {
         }
     }
 
+    pub fn with_title(mut self, title: &'static str) -> Self {
+        self.options.title = title;
+        self
+    }
+
+    pub fn with_id(mut self, id: &'static str) -> Self {
+        self.options.id = Some(id);
+        self
+    }
+
+    pub fn with_size(mut self, width: u32, height: u32) -> Self {
+        self.options.size = (width, height);
+        self
+    }
+
+    pub fn with_min_size(mut self, width: u32, height: u32) -> Self {
+        self.options.min_size = (width, height);
+        self
+    }
+
+    pub fn with_max_size(mut self, width: u32, height: u32) -> Self {
+        self.options.max_size = (width, height);
+        self
+    }
+
+    pub fn with_position(mut self, x: u32, y: u32) -> Self {
+        self.options.max_size = (x, y);
+        self
+    }
+
+    pub fn with_resizable(mut self, enabled: bool) -> Self {
+        self.options.resizable = enabled;
+        self
+    }
+
+    pub fn with_maximized(mut self, enabled: bool) -> Self {
+        self.options.maximized = enabled;
+        self
+    }
+
+    pub fn with_visible(mut self, enabled: bool) -> Self {
+        self.options.visible = enabled;
+        self
+    }
+
+    pub fn with_transparent(mut self, enabled: bool) -> Self {
+        self.options.transparent = enabled;
+        self
+    }
+
+    pub fn with_blur(mut self, enabled: bool) -> Self {
+        self.options.blur = enabled;
+        self
+    }
+
+    pub fn with_decorations(mut self, enabled: bool) -> Self {
+        self.options.decorations = enabled;
+        self
+    }
+
+    pub fn with_icon(mut self, path: &'static str) -> Self {
+        self
+    }
+
+    pub fn with_active(mut self, enabled: bool) -> Self {
+        self.options.active = enabled;
+        self
+    }
+
     pub fn run<F>(self, mut callback: F)
     where
         F: FnMut(&mut Context),

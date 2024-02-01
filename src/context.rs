@@ -1,4 +1,5 @@
 use crate::ui::Component;
+use crate::window::options::WindowOptions;
 use crate::window::{config::GraphicsContext, surface::SkiaSurface, Window};
 use gl::types::*;
 use gl_rs as gl;
@@ -22,10 +23,10 @@ pub struct Context {
 }
 
 impl Context {
-    pub fn new() -> anyhow::Result<Self> {
+    pub fn new(options: WindowOptions) -> anyhow::Result<Self> {
         let event_loop = EventLoop::new()?;
         event_loop.set_control_flow(winit::event_loop::ControlFlow::Poll);
-        let window = Window::new(&event_loop);
+        let window = Window::new(&event_loop, options);
         let gr_context = GraphicsContext::new(&window);
         let surface = SkiaSurface::new(&window);
 

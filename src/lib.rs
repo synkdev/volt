@@ -5,18 +5,19 @@ pub mod ui;
 pub(crate) mod window;
 
 use crate::context::Context;
+use crate::window::options::WindowOptions;
 
 // Re-exports
 pub use skia::font_style;
 
 pub struct Volt {
-    app: Context,
+    options: WindowOptions,
 }
 
 impl Volt {
     pub fn new() -> Self {
         Volt {
-            app: Context::new().unwrap(),
+            options: WindowOptions::default(),
         }
     }
 
@@ -24,7 +25,9 @@ impl Volt {
     where
         F: FnMut(&mut Context),
     {
-        callback(&mut self.app);
-        self.app.run().unwrap();
+        let mut app = Context::new(self.options).expect("Could not create a Context!");
+
+        callback(&mut app);
+        app.run().expect("Could not run the app!");
     }
 }

@@ -6,10 +6,13 @@ use glutin::config::{Config, ConfigTemplateBuilder, GlConfig};
 use glutin_winit::DisplayBuilder;
 use raw_window_handle::{HasRawWindowHandle, RawWindowHandle};
 use winit::{
+    dpi::LogicalPosition,
     dpi::LogicalSize,
     event_loop::EventLoop,
     window::{Window as WinitWindow, WindowBuilder},
 };
+
+use self::options::WindowOptions;
 
 pub struct Window {
     pub window: WinitWindow,
@@ -18,8 +21,21 @@ pub struct Window {
 }
 
 impl Window {
-    pub fn new(event_loop: &EventLoop<()>) -> Self {
-        let window_builder = WindowBuilder::new().with_inner_size(LogicalSize::new(1400, 900));
+    pub fn new(event_loop: &EventLoop<()>, options: WindowOptions) -> Self {
+        let window_builder = WindowBuilder::new()
+            .with_inner_size(LogicalSize::new(options.size.0, options.size.1))
+            .with_blur(options.blur)
+            .with_title(options.title)
+            .with_active(options.active)
+            .with_visible(options.visible)
+            .with_transparent(options.transparent)
+            .with_blur(options.blur)
+            .with_maximized(options.maximized)
+            .with_resizable(options.resizable)
+            .with_decorations(options.decorations)
+            .with_window_icon(options.window_icon)
+            .with_position(LogicalPosition::new(options.position.0, options.position.1));
+
         let template = ConfigTemplateBuilder::new()
             .with_alpha_size(8)
             .with_transparency(true);

@@ -17,6 +17,7 @@ pub struct Button {
     pub font_weight: skia::font_style::Weight,
     pub font_style: skia::font_style::Slant,
     pub on_click: fn(&mut Self),
+    pub on_click_release: fn(&mut Self),
     pub on_hover_enter: fn(&mut Self),
     pub on_hover_leave: fn(&mut Self),
     pub is_dirty: bool,
@@ -72,6 +73,10 @@ impl Component for Button {
         (self.on_click)(self)
     }
 
+    fn on_click_release(&mut self) {
+        (self.on_click_release)(self)
+    }
+
     fn on_hover_enter(&mut self) {
         (self.on_hover_enter)(self);
     }
@@ -90,6 +95,10 @@ impl Component for Button {
 
     fn is_visible(&self) -> bool {
         self.is_visible
+    }
+
+    fn set_dirty(&mut self) {
+        self.is_dirty = true
     }
 
     fn was_drawn(&mut self) {
@@ -113,6 +122,7 @@ impl Button {
             font_weight: font_style::Weight::NORMAL,
             font_family: "JetBrains Mono",
             on_click: |_| {},
+            on_click_release: |_| {},
             on_hover_enter: |_| {},
             on_hover_leave: |_| {},
             is_dirty: true,

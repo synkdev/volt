@@ -15,8 +15,12 @@ impl Context {
     pub fn process_click(&mut self, button: MouseButton, position: (f32, f32)) {
         if button == MouseButton::Left {
             match active_element(&mut self.components, position) {
-                Some(component) => component.on_click(),
-                None => return,
+                Some((_, component)) => component.on_click(),
+                None => {
+                    for (_, component) in &mut self.components.iter_mut() {
+                        component.on_hover_leave();
+                    }
+                }
             }
         }
         self.render();
@@ -24,14 +28,19 @@ impl Context {
 
     pub fn process_hover(&mut self, position: (f32, f32)) {
         match active_element(&mut self.components, position) {
-            Some(component) => component.on_hover_enter(),
+            Some((_, component)) => {
+                component.on_hover_enter();
+                if component.is_dirty() {
+                    self.render()
+                }
+            }
             None => {
                 for (_, component) in &mut self.components.iter_mut() {
                     component.on_hover_leave();
                 }
+                self.render();
             }
         }
-        // self.render();
     }
     pub fn handle_events(
         &mut self,
@@ -89,8 +98,7 @@ impl Context {
                         NonZeroU32::new(width.max(1)).unwrap(),
                         NonZeroU32::new(height.max(1)).unwrap(),
                     );
-                    self.dirty = true;
-                    self.render();
+                    self.redraw_full();
                 }
                 WindowEvent::RedrawRequested => {
                     self.render();

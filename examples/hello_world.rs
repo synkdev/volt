@@ -1,5 +1,5 @@
 use volt::{
-    ui::{button::ButtonBuilder, Color},
+    ui::{button::ButtonBuilder, Color, Component},
     Volt,
 };
 
@@ -19,9 +19,11 @@ fn main() {
                 .on_click(|_| println!("hello"))
                 .on_hover_enter(|btn| {
                     btn.fill = Color::Hex("#b4befe").into().unwrap();
+                    // btn.set_dirty();
                 })
                 .on_hover_leave(|btn| {
                     btn.fill = Color::Hex("#313244").into().unwrap();
+                    // btn.set_dirty();
                 })
                 .into(),
         );

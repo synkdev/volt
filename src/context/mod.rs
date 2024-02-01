@@ -48,7 +48,8 @@ impl Context {
 
     pub fn add(&mut self, id: &'static str, component: Box<dyn Component>) {
         self.components.insert(id.to_string(), component);
-        self.draw();
+        self.dirty = true;
+        self.render();
     }
 
     pub fn run(&mut self) -> anyhow::Result<()> {

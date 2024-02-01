@@ -1,99 +1,37 @@
-use crate::ui::Component;
-use crate::window::options::WindowOptions;
-use crate::window::{config::GraphicsContext, surface::SkiaSurface, Window};
 use gl::types::*;
 use gl_rs as gl;
 use glutin::{config::GlConfig, prelude::GlSurface};
-use skia::{gpu::gl::FramebufferInfo, Color, Paint};
-use std::collections::HashMap;
+use skia::gpu::gl::FramebufferInfo;
 use std::num::NonZeroU32;
 use winit::{
-    event::{Event, KeyEvent, Modifiers, WindowEvent},
-    event_loop::{EventLoop, EventLoopWindowTarget},
+    event::{Event, KeyEvent, WindowEvent},
+    event_loop::EventLoopWindowTarget,
 };
 
-pub struct Context {
-    modifiers: Modifiers,
-    surface: SkiaSurface,
-    window: Window,
-    gr_context: GraphicsContext,
-    event_loop: Option<EventLoop<()>>,
-    dirty: bool,
-    background: Color,
-    paint: Paint,
-    pub components: HashMap<String, Box<dyn Component>>,
-    pub dirty_components: Vec<String>,
-}
+use super::Context;
 
 impl Context {
-    pub fn new(options: WindowOptions) -> anyhow::Result<Self> {
-        let event_loop = EventLoop::new()?;
-        event_loop.set_control_flow(winit::event_loop::ControlFlow::Poll);
-        let window = Window::new(&event_loop, options.clone());
-        let gr_context = GraphicsContext::new(&window);
-        let surface = SkiaSurface::new(&window);
-
-        let modifiers = Modifiers::default();
-        let paint = Paint::default();
-
-        Ok(Context {
-            event_loop: Some(event_loop),
-            window,
-            gr_context,
-            surface,
-            modifiers,
-            dirty: true,
-            paint,
-            dirty_components: Vec::new(),
-            components: HashMap::new(),
-            background: options.background.into().unwrap(),
-        })
-    }
-
-    pub fn run(&mut self) -> anyhow::Result<()> {
-        let event_loop = self.event_loop.take().unwrap();
-        let mut cursor_pos = (0.0_f32, 0.0_f32);
-
-        event_loop.run(move |event, window_target| {
-            self.handle_events(event, window_target, &mut cursor_pos)
-        })?;
-        Ok(())
-    }
-
-    pub fn render(&mut self) {
-        self.draw();
-        self.finish_render();
-    }
-
-    pub fn start_render(&mut self) {
-        self.draw();
-    }
-
-    pub fn draw(&mut self) {
-        let canvas = self.surface.surface.canvas();
-
-        if self.dirty {
-            canvas.clear(self.background);
-            for (_, component) in self.components.iter_mut() {
-                component.render(canvas, &mut self.paint);
+    pub fn process_click(&mut self, button: MouseButton, position: (f32, f32)) {
+        if button == MouseButton::Left {
+            match active_element(&mut self.components, position) {
+                Some(component) => component.on_click(),
+                None => return,
             }
-            self.dirty = false
         }
+        self.render();
     }
 
-    pub fn finish_render(&mut self) {
-        self.gr_context
-            .gl_surface
-            .swap_buffers(&self.gr_context.gl_context)
-            .unwrap();
-        self.surface.gr_context.flush_and_submit();
+    pub fn process_hover(&mut self, position: (f32, f32)) {
+        match active_element(&mut self.components, position) {
+            Some(component) => component.on_hover_enter(),
+            None => {
+                for component in &mut self.components.iter_mut() {
+                    component.on_hover_leave();
+                }
+            }
+        }
+        // self.render();
     }
-
-    pub fn add(&mut self, id: String, component: Box<dyn Component>) {
-        self.components.insert(id, component);
-        self.draw();
-    }
-
     pub fn handle_events(
         &mut self,
         main_event: Event<()>,

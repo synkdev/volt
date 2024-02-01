@@ -1,4 +1,5 @@
 pub mod config;
+pub mod options;
 pub mod surface;
 
 use glutin::config::{Config, ConfigTemplateBuilder, GlConfig};

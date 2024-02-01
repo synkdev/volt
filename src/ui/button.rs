@@ -21,6 +21,7 @@ pub struct Button {
     pub on_hover_enter: fn(&mut Self),
     pub on_hover_leave: fn(&mut Self),
     pub is_dirty: bool,
+    pub is_hovered: bool,
     pub is_visible: bool,
 }
 
@@ -93,6 +94,10 @@ impl Component for Button {
         self.is_dirty
     }
 
+    fn is_hovered(&self) -> bool {
+        self.is_hovered
+    }
+
     fn is_visible(&self) -> bool {
         self.is_visible
     }
@@ -103,6 +108,10 @@ impl Component for Button {
 
     fn was_drawn(&mut self) {
         self.is_dirty = false
+    }
+
+    fn set_hovered(&mut self, value: bool) {
+        self.is_hovered = value
     }
 }
 
@@ -127,6 +136,7 @@ impl Button {
             on_hover_leave: |_| {},
             is_dirty: true,
             is_visible: true,
+            is_hovered: false,
         }
     }
 }

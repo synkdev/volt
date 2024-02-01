@@ -28,15 +28,24 @@ impl Context {
 
     pub fn process_hover(&mut self, position: (f32, f32)) {
         match active_element(&mut self.components, position) {
-            some((_, component)) => {
-                component.on_hover_enter();
-                if component.is_dirty() {
-                    self.render()
+            Some((_, component)) => {
+                if !component.is_hovered() {
+                    println!("going to hover");
+                    // println!("{}", component.is_hovered());
+                    component.on_hover_enter();
+                    component.set_hovered(true);
+                    // println!("{}", component.is_hovered());
+                    if component.is_dirty() {
+                        self.render()
+                    }
                 }
             }
-            none => {
+            None => {
                 for (_, component) in &mut self.components.iter_mut() {
-                    component.on_hover_leave();
+                    if component.is_hovered() {
+                        component.on_hover_leave();
+                        component.set_hovered(false);
+                    }
                 }
                 self.render();
             }

@@ -8,7 +8,9 @@ use crate::context::Context;
 use crate::window::options::WindowOptions;
 
 // Re-exports
+use image::GenericImageView;
 pub use skia::font_style;
+use winit::window::Icon;
 
 pub struct Volt {
     options: WindowOptions,
@@ -82,6 +84,11 @@ impl Volt {
     }
 
     pub fn with_icon(mut self, path: &'static str) -> Self {
+        let image = image::open(path).unwrap();
+        let rgba = image.to_rgba8().into_raw();
+        let (width, height) = image.dimensions();
+
+        self.options.window_icon = Some(Icon::from_rgba(rgba, width, height).unwrap());
         self
     }
 

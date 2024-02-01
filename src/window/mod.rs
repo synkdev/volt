@@ -2,7 +2,7 @@ pub mod config;
 pub mod options;
 pub mod surface;
 
-use glutin::config::{Config, ConfigTemplateBuilder, GlConfig};
+use glutin::config::{ConfigTemplateBuilder, GlConfig};
 use glutin_winit::DisplayBuilder;
 use raw_window_handle::{HasRawWindowHandle, RawWindowHandle};
 use winit::{

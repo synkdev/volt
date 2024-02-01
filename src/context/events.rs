@@ -28,13 +28,13 @@ impl Context {
 
     pub fn process_hover(&mut self, position: (f32, f32)) {
         match active_element(&mut self.components, position) {
-            Some((_, component)) => {
+            some((_, component)) => {
                 component.on_hover_enter();
                 if component.is_dirty() {
                     self.render()
                 }
             }
-            None => {
+            none => {
                 for (_, component) in &mut self.components.iter_mut() {
                     component.on_hover_leave();
                 }
@@ -42,6 +42,7 @@ impl Context {
             }
         }
     }
+
     pub fn handle_events(
         &mut self,
         main_event: Event<()>,

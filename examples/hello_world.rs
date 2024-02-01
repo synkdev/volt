@@ -4,7 +4,7 @@ use volt::{
 };
 
 fn main() {
-    Volt::new().run(|cx| {
+    Volt::new().with_id("hello_world").run(|cx| {
         cx.add(
             "werks_btn",
             ButtonBuilder::new()
@@ -19,11 +19,11 @@ fn main() {
                 .on_click(|_| println!("hello"))
                 .on_hover_enter(|btn| {
                     btn.fill = Color::Hex("#b4befe").into().unwrap();
-                    // btn.set_dirty();
+                    btn.set_dirty();
                 })
                 .on_hover_leave(|btn| {
                     btn.fill = Color::Hex("#313244").into().unwrap();
-                    // btn.set_dirty();
+                    btn.set_dirty();
                 })
                 .into(),
         );

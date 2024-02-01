@@ -2,7 +2,7 @@ use crate::window::Window;
 use gl::types::*;
 use gl_rs as gl;
 use glutin::{
-    config::{Config, GlConfig},
+    config::GlConfig,
     display::{GetGlDisplay, GlDisplay},
 };
 use skia::{

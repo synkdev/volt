@@ -6,26 +6,13 @@ pub(crate) mod window;
 use crate::ui::Component;
 use gl::types::*;
 use gl_rs as gl;
-use glutin::{
-    config::{ConfigTemplateBuilder, GlConfig},
-    context::{ContextApi, ContextAttributesBuilder, PossiblyCurrentContext},
-    display::{GetGlDisplay, GlDisplay},
-    prelude::{GlSurface, NotCurrentGlContext},
-    surface::{Surface as GlutinSurface, SurfaceAttributesBuilder, WindowSurface},
-};
-use glutin_winit::DisplayBuilder;
-use raw_window_handle::HasRawWindowHandle;
-use skia::{
-    gpu::{self, backend_render_targets, gl::FramebufferInfo, SurfaceOrigin},
-    Color, ColorType, Surface,
-};
-use std::{ffi::CString, num::NonZeroU32};
+use glutin::{config::GlConfig, prelude::GlSurface};
+use skia::{gpu::gl::FramebufferInfo, Color};
+use std::num::NonZeroU32;
 use window::{config::GraphicsContext, surface::SkiaSurface, Window};
 use winit::{
-    dpi::LogicalSize,
     event::{Event, KeyEvent, Modifiers, WindowEvent},
     event_loop::{EventLoop, EventLoopWindowTarget},
-    window::{Window as WinitWindow, WindowBuilder},
 };
 
 // Re-exports
@@ -81,124 +68,6 @@ impl Context {
             components: Vec::new(),
         })
     }
-    // pub fn new() -> anyhow::Result<Self> {
-    //     let event_loop = EventLoop::new()?;
-    //     event_loop.set_control_flow(winit::event_loop::ControlFlow::Poll);
-    //     let winit_window_builder =
-    //         WindowBuilder::new().with_inner_size(LogicalSize::new(1200, 700));
-    //     let template = ConfigTemplateBuilder::new()
-    //         .with_alpha_size(8)
-    //         .with_transparency(true);
-    //     let display_builder = DisplayBuilder::new().with_window_builder(Some(winit_window_builder));
-    //
-    //     let (window, gl_config) = display_builder
-    //         .build(&event_loop, template, |configs| {
-    //             configs
-    //                 .reduce(|accum, config| {
-    //                     let transparency_check = config.supports_transparency().unwrap_or(false)
-    //                         & !accum.supports_transparency().unwrap_or(false);
-    //
-    //                     if transparency_check || config.num_samples() < accum.num_samples() {
-    //                         config
-    //                     } else {
-    //                         accum
-    //                     }
-    //                 })
-    //                 .unwrap()
-    //         })
-    //         .unwrap();
-    //
-    //     let window = window.expect("Couldn't create a window.");
-    //     let raw_window_handle = window.raw_window_handle();
-    //
-    //     let context_attributes = ContextAttributesBuilder::new().build(Some(raw_window_handle));
-    //     let fallback_context_attributes = ContextAttributesBuilder::new()
-    //         .with_context_api(ContextApi::Gles(None))
-    //         .build(Some(raw_window_handle));
-    //
-    //     let not_current_gl_context = unsafe {
-    //         gl_config
-    //             .display()
-    //             .create_context(&gl_config, &context_attributes)
-    //             .unwrap_or_else(|_| {
-    //                 gl_config
-    //                     .display()
-    //                     .create_context(&gl_config, &fallback_context_attributes)
-    //                     .expect("failed to create context")
-    //             })
-    //     };
-    //
-    //     let (width, height): (u32, u32) = window.inner_size().into();
-    //
-    //     let attrs = SurfaceAttributesBuilder::<WindowSurface>::new().build(
-    //         raw_window_handle,
-    //         NonZeroU32::new(width).unwrap(),
-    //         NonZeroU32::new(height).unwrap(),
-    //     );
-    //
-    //     let gl_surface = unsafe {
-    //         gl_config
-    //             .display()
-    //             .create_window_surface(&gl_config, &attrs)
-    //             .expect("Could not create gl window surface")
-    //     };
-    //
-    //     let gl_context = not_current_gl_context
-    //         .make_current(&gl_surface)
-    //         .expect("Could not make GL context current when setting up skia renderer");
-    //
-    //     gl::load_with(|s| {
-    //         gl_config
-    //             .display()
-    //             .get_proc_address(CString::new(s).unwrap().as_c_str())
-    //     });
-    //     let interface = skia::gpu::gl::Interface::new_load_with(|name| {
-    //         if name == "eglGetCurrentDisplay" {
-    //             return std::ptr::null();
-    //         }
-    //         gl_config
-    //             .display()
-    //             .get_proc_address(CString::new(name).unwrap().as_c_str())
-    //     })
-    //     .expect("Could not create interface");
-    //
-    //     let mut gr_context = skia::gpu::DirectContext::new_gl(Some(interface), None)
-    //         .expect("Could not create direct context");
-    //
-    //     let fb_info = {
-    //         let mut fboid: GLint = 0;
-    //         unsafe { gl::GetIntegerv(gl::FRAMEBUFFER_BINDING, &mut fboid) };
-    //
-    //         FramebufferInfo {
-    //             fboid: fboid.try_into().unwrap(),
-    //             format: skia::gpu::gl::Format::RGBA8.into(),
-    //             ..Default::default()
-    //         }
-    //     };
-    //     let num_samples = gl_config.num_samples() as usize;
-    //     let stencil_size = gl_config.stencil_size() as usize;
-    //
-    //     let surface =
-    //         Self::create_surface(&window, fb_info, &mut gr_context, num_samples, stencil_size);
-    //
-    //     let modifiers = Modifiers::default();
-    //     let paint = skia::Paint::default();
-    //
-    //     Ok(Context {
-    //         surface,
-    //         gl_surface,
-    //         gl_context,
-    //         gr_context,
-    //         window,
-    //         modifiers,
-    //         paint,
-    //         event_loop: Some(event_loop),
-    //         components: Vec::new(),
-    //         gl_config,
-    //         clear: true,
-    //     })
-    // }
-    //
     pub fn run(&mut self) -> anyhow::Result<()> {
         let event_loop = self.event_loop.take().unwrap();
         let mut cursor_pos = (0.0_f32, 0.0_f32);
@@ -279,11 +148,13 @@ impl Context {
     }
 
     pub fn start_render(&mut self) {
-        if self.clear {
-            let canvas = self.surface.surface.canvas();
-            canvas.clear(Color::from_rgb(30, 29, 45));
-            self.clear = false;
-        }
+        let canvas = self.surface.surface.canvas();
+        // if self.clear {
+        canvas.clear(Color::from_rgb(30, 29, 45));
+        canvas.save();
+        self.clear = false;
+        // }
+        canvas.restore();
         self.draw();
     }
 

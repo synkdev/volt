@@ -49,15 +49,15 @@ impl Window {
         }
     }
 
-    pub fn window(self) -> WinitWindow {
-        self.window
+    pub fn window(&mut self) -> &mut WinitWindow {
+        &mut self.window
     }
 
-    pub fn handle(self) -> RawWindowHandle {
-        self.handle
+    pub fn handle(&mut self) -> &mut RawWindowHandle {
+        &mut self.handle
     }
 
-    pub fn gl_config(self) -> Config {
-        self.gl_config
+    pub fn gl_config(&mut self) -> &mut Config {
+        &mut self.gl_config
     }
 }

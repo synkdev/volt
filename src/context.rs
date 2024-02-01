@@ -127,14 +127,8 @@ impl Context {
     }
 
     pub fn start_render(&mut self) {
-        println!("called mf");
         let canvas = self.surface.surface.canvas();
-        // if self.clear {
         canvas.clear(Color::from_rgb(30, 29, 45));
-        // canvas.save();
-        // self.clear = false;
-        // }
-        // canvas.restore();
         self.draw();
     }
 

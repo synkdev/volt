@@ -21,7 +21,7 @@ impl Volt {
         }
     }
 
-    pub fn run<F>(mut self, mut callback: F)
+    pub fn run<F>(self, mut callback: F)
     where
         F: FnMut(&mut Context),
     {

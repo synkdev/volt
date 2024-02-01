@@ -1,9 +1,10 @@
 [package]
 name = "volt"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+wayland = []
 
 [dependencies]
 anyhow = "1.0.79"
@@ -11,6 +12,16 @@ gl-rs = { package = "gl", version = "0.14.0" }
 glutin = "0.31.2"
 glutin-winit = "0.4.2"
 raw-window-handle = "0.5.0"
-skia = { package = "skia-safe", version = "0.70.0", features = ["gl", "wayland", "shaper", "textlayout", "svg"] }
+skia = { package = "skia-safe", version = "0.70.0", features = [
+	"gl",
+	"wayland",
+	"shaper",
+	"textlayout",
+	"svg",
+] }
 tokio = { version = "1.35.1", features = ["full"] }
 winit = "0.29.10"
+
+[[example]]
+name = "hello_world"
+required-features = ["wayland"]

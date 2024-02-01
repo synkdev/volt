@@ -2,6 +2,7 @@ use winit::window::Icon;
 
 pub struct WindowOptions {
     pub title: &'static str,
+    pub id: Option<&'static str>,
     pub size: (u32, u32),
     pub min_size: (u32, u32),
     pub max_size: (u32, u32),
@@ -20,6 +21,7 @@ impl Default for WindowOptions {
     fn default() -> Self {
         WindowOptions {
             title: "Volt App",
+            id: Some("volt-app"),
             size: (1200, 700),
             min_size: (800, 400),
             max_size: (1600, 900),

@@ -22,7 +22,8 @@ pub struct Window {
 
 impl Window {
     pub fn new(event_loop: &EventLoop<()>, options: WindowOptions) -> Self {
-        let window_builder = WindowBuilder::new()
+        #[allow(unused_mut)]
+        let mut window_builder = WindowBuilder::new()
             .with_inner_size(LogicalSize::new(options.size.0, options.size.1))
             .with_blur(options.blur)
             .with_title(options.title)
@@ -35,6 +36,13 @@ impl Window {
             .with_decorations(options.decorations)
             .with_window_icon(options.window_icon)
             .with_position(LogicalPosition::new(options.position.0, options.position.1));
+
+        #[allow(dead_code)]
+        #[cfg(feature = "wayland")]
+        if let Some(app_id) = options.id {
+            use winit::platform::wayland::WindowBuilderExtWayland as _;
+            window_builder = window_builder.with_name(app_id, "");
+        }
 
         let template = ConfigTemplateBuilder::new()
             .with_alpha_size(8)
@@ -64,17 +72,5 @@ impl Window {
             handle,
             gl_config,
         }
-    }
-
-    pub fn window(&mut self) -> &mut WinitWindow {
-        &mut self.window
-    }
-
-    pub fn handle(&mut self) -> &mut RawWindowHandle {
-        &mut self.handle
-    }
-
-    pub fn gl_config(&mut self) -> &mut Config {
-        &mut self.gl_config
     }
 }

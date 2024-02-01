@@ -5,6 +5,7 @@ use gl::types::*;
 use gl_rs as gl;
 use glutin::{config::GlConfig, prelude::GlSurface};
 use skia::{gpu::gl::FramebufferInfo, Color, Paint};
+use std::collections::HashMap;
 use std::num::NonZeroU32;
 use winit::{
     event::{Event, KeyEvent, Modifiers, WindowEvent},
@@ -20,7 +21,8 @@ pub struct Context {
     dirty: bool,
     background: Color,
     paint: Paint,
-    pub components: Vec<Box<dyn Component>>,
+    pub components: HashMap<String, Box<dyn Component>>,
+    pub dirty_components: Vec<String>,
 }
 
 impl Context {
@@ -42,7 +44,8 @@ impl Context {
             modifiers,
             dirty: true,
             paint,
-            components: Vec::new(),
+            dirty_components: Vec::new(),
+            components: HashMap::new(),
             background: options.background.into().unwrap(),
         })
     }
@@ -71,7 +74,7 @@ impl Context {
 
         if self.dirty {
             canvas.clear(self.background);
-            for component in self.components.iter_mut() {
+            for (_, component) in self.components.iter_mut() {
                 component.render(canvas, &mut self.paint);
             }
             self.dirty = false
@@ -86,8 +89,8 @@ impl Context {
         self.surface.gr_context.flush_and_submit();
     }
 
-    pub fn add(&mut self, component: Box<dyn Component>) {
-        self.components.push(component);
+    pub fn add(&mut self, id: String, component: Box<dyn Component>) {
+        self.components.insert(id, component);
         self.draw();
     }
 

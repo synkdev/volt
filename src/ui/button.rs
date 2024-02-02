@@ -3,7 +3,7 @@ use crate::helpers::compare_fields;
 use crate::ui::Color::Hex;
 use crate::ui::Component;
 
-#[derive(Clone, Copy)]
+#[derive(Copy, Debug)]
 pub struct Button {
     pub text: &'static str,
     pub position: (f32, f32),
@@ -28,6 +28,32 @@ pub struct Button {
 
 pub struct ButtonBuilder {
     pub button: Box<Button>,
+}
+
+impl Clone for Button {
+    fn clone(&self) -> Self {
+        Button {
+            text: self.text,
+            size: self.size.clone(),
+            fill: self.fill.clone(),
+            on_hover_leave: self.on_hover_leave.clone(),
+            on_hover_enter: self.on_hover_enter.clone(),
+            on_click: self.on_click.clone(),
+            on_click_release: self.on_click_release.clone(),
+            position: self.position.clone(),
+            color: self.color.clone(),
+            radius: self.radius.clone(),
+            is_dirty: self.is_dirty.clone(),
+            font_size: self.font_size.clone(),
+            font_style: self.font_style.clone(),
+            is_hovered: self.is_hovered.clone(),
+            is_visible: self.is_visible.clone(),
+            font_family: self.font_family,
+            font_weight: self.font_weight.clone(),
+            border_width: self.border_width.clone(),
+            border_color: self.border_color.clone(),
+        }
+    }
 }
 
 impl Component for Button {
@@ -73,13 +99,12 @@ impl Component for Button {
 
     fn equals(&self, other: &dyn Component) -> bool {
         if let Some(other_component) = other.downcast_ref::<Button>() {
-            return compare_fields!(
-                self, other_component;
-                text, position, size, color, fill, radius,
-                border_width, border_color, font_size, font_family,
-                font_weight, font_style
-            );
+            // return compare_fields!(
+            //     self, other_component; fill
+            // );
+            return self.fill == other_component.fill;
         } else {
+            println!("no compare");
             return false;
         }
     }
@@ -97,11 +122,15 @@ impl Component for Button {
 
         (self.on_hover_enter)(self);
 
+        println!("value of equals on enter: {}", self.equals(&old_state));
+        println!(
+            "old fill: {:?};   new fill: {:?}",
+            old_state.fill, self.fill
+        );
+
         if self.equals(&old_state) {
-            println!("not dirty");
             self.set_dirty(false);
         } else {
-            println!("very dirty");
             self.set_dirty(true);
         }
     }
@@ -111,11 +140,14 @@ impl Component for Button {
 
         (self.on_hover_leave)(self);
 
+        println!("value of equals on leave: {}", self.equals(&old_state));
+        println!(
+            "old fill: {:?};   new fill: {:?}",
+            old_state.fill, self.fill
+        );
         if self.equals(&old_state) {
-            println!("not dirty");
             self.set_dirty(false);
         } else {
-            println!("very dirty");
             self.set_dirty(true);
         }
     }

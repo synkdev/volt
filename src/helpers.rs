@@ -15,3 +15,11 @@ pub(crate) fn active_element(
     }
     None
 }
+
+#[macro_export]
+macro_rules! compare_fields {
+    ($left:expr, $right:expr; $($field:ident),*) => {
+        $(if $left.$field != $right.$field { return false; })*
+        true
+    };
+}

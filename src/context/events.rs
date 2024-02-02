@@ -25,33 +25,28 @@ impl Context {
         }
         self.render();
     }
-
     pub fn process_hover(&mut self, position: (f32, f32)) {
         match active_element(&mut self.components, position) {
             Some((_, component)) => {
                 if !component.is_hovered() {
-                    println!("going to hover");
-                    // println!("{}", component.is_hovered());
-                    component.on_hover_enter();
+                    println!("Entering hover");
                     component.set_hovered(true);
-                    // println!("{}", component.is_hovered());
-                    if component.is_dirty() {
-                        self.render()
-                    }
+                    component.on_hover_enter();
+                    self.render();
                 }
             }
             None => {
                 for (_, component) in &mut self.components.iter_mut() {
                     if component.is_hovered() {
-                        component.on_hover_leave();
+                        println!("Leaving hover");
                         component.set_hovered(false);
+                        component.on_hover_leave();
                     }
                 }
                 self.render();
             }
         }
     }
-
     pub fn handle_events(
         &mut self,
         main_event: Event<()>,

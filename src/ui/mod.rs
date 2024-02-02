@@ -14,7 +14,7 @@ pub trait Component: Any {
     fn is_dirty(&self) -> bool;
     fn is_visible(&self) -> bool;
     fn was_drawn(&mut self);
-    fn set_dirty(&mut self);
+    fn set_dirty(&mut self, value: bool);
     fn set_hovered(&mut self, value: bool);
     fn get_bounds(&self) -> skia::Rect;
 }

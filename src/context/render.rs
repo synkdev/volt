@@ -18,6 +18,7 @@ impl Context {
     pub fn find_dirty_components(&mut self) {
         for (id, component) in self.components.iter_mut() {
             if component.is_dirty() {
+                println!("dirty: {id}");
                 self.dirty_components.push(id.to_owned());
             }
         }
@@ -38,6 +39,7 @@ impl Context {
         let canvas = self.surface.surface.canvas();
 
         for dirty_component in &self.dirty_components {
+            println!("rendering: {dirty_component}");
             let component: &mut Box<dyn Component> =
                 self.components.get_mut(dirty_component).unwrap();
             component.render(canvas, &mut self.paint);

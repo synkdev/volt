@@ -18,12 +18,14 @@ fn main() {
                 .position(200.0, 200.0)
                 .on_click(|_| println!("hello"))
                 .on_hover_enter(|btn| {
+                    println!("hovering");
                     btn.fill = Color::Hex("#b4befe").into().unwrap();
-                    btn.set_dirty();
+                    btn.set_dirty(true);
                 })
                 .on_hover_leave(|btn| {
+                    println!("exiting");
                     btn.fill = Color::Hex("#313244").into().unwrap();
-                    btn.set_dirty();
+                    btn.set_dirty(true);
                 })
                 .into(),
         );

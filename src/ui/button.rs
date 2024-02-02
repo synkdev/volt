@@ -102,8 +102,8 @@ impl Component for Button {
         self.is_visible
     }
 
-    fn set_dirty(&mut self) {
-        self.is_dirty = true
+    fn set_dirty(&mut self, value: bool) {
+        self.is_dirty = value
     }
 
     fn was_drawn(&mut self) {

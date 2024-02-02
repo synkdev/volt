@@ -1,4 +1,5 @@
 use crate::font_style;
+use crate::helpers::compare_fields;
 use crate::ui::Color::Hex;
 use crate::ui::Component;
 
@@ -72,7 +73,12 @@ impl Component for Button {
 
     fn equals(&self, other: &dyn Component) -> bool {
         if let Some(other_component) = other.downcast_ref::<Button>() {
-            return true;
+            return compare_fields!(
+                self, other_component;
+                text, position, size, color, fill, radius,
+                border_width, border_color, font_size, font_family,
+                font_weight, font_style
+            );
         } else {
             return false;
         }
@@ -87,11 +93,27 @@ impl Component for Button {
     }
 
     fn on_hover_enter(&mut self) {
+        let old_state = self.clone();
+
         (self.on_hover_enter)(self);
+
+        if self.equals(&old_state) == false {
+            self.set_dirty(true);
+        } else {
+            self.set_dirty(false);
+        }
     }
 
     fn on_hover_leave(&mut self) {
+        let old_state = self.clone();
+
         (self.on_hover_leave)(self);
+
+        if self.equals(&old_state) == false {
+            self.set_dirty(true);
+        } else {
+            self.set_dirty(false);
+        }
     }
 
     fn get_bounds(&self) -> skia::Rect {

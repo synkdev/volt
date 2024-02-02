@@ -20,12 +20,10 @@ fn main() {
                 .on_hover_enter(|btn| {
                     println!("hovering");
                     btn.fill = Color::Hex("#b4befe").into().unwrap();
-                    btn.set_dirty(true);
                 })
                 .on_hover_leave(|btn| {
                     println!("exiting");
                     btn.fill = Color::Hex("#313244").into().unwrap();
-                    btn.set_dirty(true);
                 })
                 .into(),
         );

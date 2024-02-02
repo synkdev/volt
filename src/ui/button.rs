@@ -70,6 +70,14 @@ impl Component for Button {
         canvas.draw_text_blob(text, (text_x, text_y), &paint);
     }
 
+    fn equals(&self, other: &dyn Component) -> bool {
+        if let Some(other_component) = other.downcast_ref::<Button>() {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     fn on_click(&mut self) {
         (self.on_click)(self)
     }

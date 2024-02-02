@@ -2,9 +2,9 @@ pub mod button;
 pub mod color;
 
 pub use color::Color;
-use std::any::Any;
+use downcast_rs::{impl_downcast, Downcast};
 
-pub trait Component: Any {
+pub trait Component: Downcast {
     fn render(&self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint);
     fn on_click(&mut self);
     fn on_click_release(&mut self);
@@ -16,5 +16,14 @@ pub trait Component: Any {
     fn was_drawn(&mut self);
     fn set_dirty(&mut self, value: bool);
     fn set_hovered(&mut self, value: bool);
+    fn equals(&self, other: &dyn Component) -> bool;
     fn get_bounds(&self) -> skia::Rect;
+}
+
+impl_downcast!(Component);
+
+impl PartialEq for Box<dyn Component> {
+    fn eq(&self, other: &Self) -> bool {
+        self.equals(other.as_ref())
+    }
 }

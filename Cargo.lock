@@ -1826,6 +1826,7 @@ name = "volt"
 version = "0.0.1"
 dependencies = [
  "anyhow",
+ "downcast-rs",
  "gl",
  "glutin",
  "glutin-winit",

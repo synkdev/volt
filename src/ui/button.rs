@@ -97,10 +97,12 @@ impl Component for Button {
 
         (self.on_hover_enter)(self);
 
-        if self.equals(&old_state) == false {
-            self.set_dirty(true);
-        } else {
+        if self.equals(&old_state) {
+            println!("not dirty");
             self.set_dirty(false);
+        } else {
+            println!("very dirty");
+            self.set_dirty(true);
         }
     }
 
@@ -109,10 +111,12 @@ impl Component for Button {
 
         (self.on_hover_leave)(self);
 
-        if self.equals(&old_state) == false {
-            self.set_dirty(true);
-        } else {
+        if self.equals(&old_state) {
+            println!("not dirty");
             self.set_dirty(false);
+        } else {
+            println!("very dirty");
+            self.set_dirty(true);
         }
     }
 

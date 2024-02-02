@@ -16,38 +16,33 @@ impl Context {
         if button == MouseButton::Left {
             match active_element(&mut self.components, position) {
                 Some((_, component)) => component.on_click(),
-                None => {
-                    for (_, component) in &mut self.components.iter_mut() {
-                        component.on_hover_leave();
-                    }
-                }
+                None => return,
             }
         }
         self.render();
     }
+
     pub fn process_hover(&mut self, position: (f32, f32)) {
         match active_element(&mut self.components, position) {
             Some((_, component)) => {
                 component.set_hovered(true);
+                component.on_hover_enter();
+                println!("button status: {:?}", component.is_dirty());
+                self.render();
             }
             None => {
                 for (_, component) in &mut self.components.iter_mut() {
                     if component.is_hovered() {
                         println!("Leaving hover");
                         component.set_hovered(false);
+                        component.on_hover_leave();
                     }
                 }
+                self.render();
             }
         }
-        for (_, component) in &mut self.components.iter_mut() {
-            if component.is_hovered() {
-                component.on_hover_enter();
-            } else {
-                component.on_hover_leave();
-            }
-        }
-        self.render();
     }
+
     pub fn handle_events(
         &mut self,
         main_event: Event<()>,

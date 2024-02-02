@@ -22,7 +22,7 @@ fn main() {
                     btn.fill = Color::Hex("#b4befe").into().unwrap();
                 })
                 .on_hover_leave(|btn| {
-                    println!("exiting");
+                    println!("exitingfdd");
                     btn.fill = Color::Hex("#313244").into().unwrap();
                 })
                 .into(),

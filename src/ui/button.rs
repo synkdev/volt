@@ -120,13 +120,15 @@ impl Component for Button {
     fn on_hover_enter(&mut self) {
         let old_state = self.clone();
 
-        (self.on_hover_enter)(self);
+        {
+            (self.on_hover_enter)(self);
+        }
 
-        println!("value of equals on enter: {}", self.equals(&old_state));
-        println!(
-            "old fill: {:?};   new fill: {:?}",
-            old_state.fill, self.fill
-        );
+        // println!("value of equals on enter: {}", self.equals(&old_state));
+        // println!(
+        //     "old fill: {:?};   new fill: {:?}",
+        //     old_state.fill, self.fill
+        // );
 
         if self.equals(&old_state) {
             self.set_dirty(false);

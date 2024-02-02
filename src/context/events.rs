@@ -27,13 +27,13 @@ impl Context {
             Some((_, component)) => {
                 component.set_hovered(true);
                 component.on_hover_enter();
-                println!("button status: {:?}", component.is_dirty());
+                // println!("button status: {:?}", component.is_dirty());
                 self.render();
             }
             None => {
                 for (_, component) in &mut self.components.iter_mut() {
                     if component.is_hovered() {
-                        println!("Leaving hover");
+                        // println!("Leaving hover");
                         component.set_hovered(false);
                         component.on_hover_leave();
                     }

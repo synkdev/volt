@@ -17,13 +17,17 @@ fn main() {
                 .text("hello")
                 .position(200.0, 200.0)
                 .on_click(|_| println!("hello"))
-                .on_hover_enter(|btn| {
-                    println!("hovering");
-                    btn.fill = Color::Hex("#b4befe").into().unwrap();
-                })
+                // .on_hover_enter(|btn| {
+                //     println!("hovering");
+                //     btn.fill = Color::Hex("#b4befe").into().unwrap();
+                //     // println!("Before fill assignment: {:?}", btn.fill);
+                //     // btn.fill = skia::Color::from_rgb(20, 30, 50);
+                //     // println!("After fill assignment: {:?}", btn.fill);
+                // })
                 .on_hover_leave(|btn| {
                     println!("exitingfdd");
                     btn.fill = Color::Hex("#313244").into().unwrap();
+                    // btn.fill = skia::Color::from_rgb(120, 230, 210);
                 })
                 .into(),
         );

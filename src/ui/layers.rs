@@ -1,7 +1,15 @@
+use std::collections::HashMap;
+
+use super::Component;
 use downcast_rs::{impl_downcast, Downcast};
 
-pub trait Layers: Downcast {
+pub trait Layer: Downcast {
     fn render(&self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint);
+    fn add(&mut self, component: dyn Component);
 }
 
-impl_downcast!(Layers);
+impl_downcast!(Layer);
+
+pub struct Layers {
+    pub layers: HashMap<usize, Box<dyn Component>>,
+}

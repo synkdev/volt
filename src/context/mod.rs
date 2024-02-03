@@ -1,7 +1,7 @@
 pub mod events;
 pub mod render;
 
-use crate::ui::Component;
+use crate::ui::Element;
 use crate::window::options::WindowOptions;
 use crate::window::{config::GraphicsContext, surface::SkiaSurface, Window};
 use skia::{Color, Paint};
@@ -17,7 +17,7 @@ pub struct Context {
     dirty: bool,
     background: Color,
     paint: Paint,
-    pub components: HashMap<String, Box<dyn Component>>,
+    pub components: HashMap<String, Box<dyn Element>>,
     pub dirty_components: Vec<String>,
 }
 
@@ -46,7 +46,7 @@ impl Context {
         })
     }
 
-    pub fn add(&mut self, id: &'static str, component: Box<dyn Component>) {
+    pub fn add(&mut self, id: &'static str, component: Box<dyn Element>) {
         self.components.insert(id.to_string(), component);
         self.dirty = true;
         self.render();

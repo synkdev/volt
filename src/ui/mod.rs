@@ -18,6 +18,8 @@ pub trait Component: Downcast {
     fn set_hovered(&mut self, value: bool);
     fn equals(&self, other: &dyn Component) -> bool;
     fn get_bounds(&self) -> skia::Rect;
+
+    fn set_fill(&mut self, color: skia::Color);
 }
 
 impl_downcast!(Component);

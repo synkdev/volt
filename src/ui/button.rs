@@ -97,6 +97,10 @@ impl Component for Button {
         canvas.draw_text_blob(text, (text_x, text_y), &paint);
     }
 
+    fn set_fill(&mut self, color: skia::Color) {
+        self.fill = color;
+    }
+
     fn equals(&self, other: &dyn Component) -> bool {
         if let Some(other_component) = other.downcast_ref::<Button>() {
             // return compare_fields!(
@@ -124,11 +128,11 @@ impl Component for Button {
             (self.on_hover_enter)(self);
         }
 
-        // println!("value of equals on enter: {}", self.equals(&old_state));
-        // println!(
-        //     "old fill: {:?};   new fill: {:?}",
-        //     old_state.fill, self.fill
-        // );
+        println!("value of equals on enter: {}", self.equals(&old_state));
+        println!(
+            "old fill: {:?};   new fill: {:?}",
+            old_state.fill, self.fill
+        );
 
         if self.equals(&old_state) {
             self.set_dirty(false);
@@ -147,7 +151,7 @@ impl Component for Button {
             "old fill: {:?};   new fill: {:?}",
             old_state.fill, self.fill
         );
-        if self.equals(&old_state) {
+        if !self.equals(&old_state) {
             self.set_dirty(false);
         } else {
             self.set_dirty(true);

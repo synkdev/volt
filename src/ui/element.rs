@@ -33,6 +33,9 @@ pub trait Element: Downcast {
     fn set_hovered(&mut self, value: bool);
     /// Set whether the element is dirty or not
     fn set_dirty(&mut self, value: bool);
+
+    /// Misc
+    fn equals(&self, other: &dyn Element) -> bool;
 }
 
 impl_downcast!(Element);

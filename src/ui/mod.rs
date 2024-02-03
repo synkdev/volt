@@ -2,6 +2,7 @@ pub mod button;
 pub mod color;
 pub mod element;
 pub mod layers;
+pub mod widget;
 
 pub use color::Color;
 use downcast_rs::{impl_downcast, Downcast};

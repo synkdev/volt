@@ -23,6 +23,8 @@ pub trait Element: Downcast {
     fn is_hovered(&mut self) -> bool;
     /// Check if the element is dirt. The element is only rendered if it is dirty
     fn is_dirty(&mut self) -> bool;
+    /// Get the bounds of the element. Used for check if mouse is under an element
+    fn get_bounds(&self) -> skia::Rect;
 
     /// Setters
     /// Set whether the element is clicked or not

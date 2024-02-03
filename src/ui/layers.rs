@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use super::element::Element;
+use super::Element;
 
 pub trait Layer: Element {
     fn render(&self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint);

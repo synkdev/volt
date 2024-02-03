@@ -19,9 +19,9 @@ pub struct Button {
     pub on_click_release: fn(&mut Self),
     pub on_hover_enter: fn(&mut Self),
     pub on_hover_leave: fn(&mut Self),
-    pub is_dirty: bool,
-    pub is_hovered: bool,
-    pub is_visible: bool,
+    pub dirty: bool,
+    pub hovered: bool,
+    pub clicked: bool,
 }
 
 impl Element for Button {
@@ -127,22 +127,26 @@ impl Element for Button {
     }
 
     fn is_dirty(&self) -> bool {
-        self.is_dirty
+        self.dirty
     }
 
     fn is_hovered(&self) -> bool {
-        self.is_hovered
+        self.hovered
     }
 
-    fn is_visible(&self) -> bool {
-        self.is_visible
+    fn is_clicked(&self) -> bool {
+        self.clicked
     }
 
     fn set_dirty(&mut self, value: bool) {
-        self.is_dirty = value
+        self.dirty = value
     }
 
     fn set_hovered(&mut self, value: bool) {
-        self.is_hovered = value
+        self.hovered = value
+    }
+
+    fn set_clicked(&mut self, value: bool) {
+        self.clicked = value
     }
 }

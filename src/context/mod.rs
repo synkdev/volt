@@ -13,10 +13,9 @@ pub struct Context {
     window: Window,
     gr_context: GraphicsContext,
     event_loop: Option<EventLoop<()>>,
-    dirty: bool,
     background: Color,
     paint: Paint,
-    root: Div,
+    pub root: Div,
 }
 
 impl Context {
@@ -38,7 +37,6 @@ impl Context {
             gr_context,
             surface,
             modifiers,
-            dirty: true,
             paint,
             root: Div::new(),
             background: options.background.into().unwrap(),

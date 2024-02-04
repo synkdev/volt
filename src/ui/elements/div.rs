@@ -126,6 +126,10 @@ impl Div {
         }
     }
 
+    pub fn into(self) -> Box<Div> {
+        Box::new(self)
+    }
+
     pub fn add(&mut self, element: Box<dyn Element>) {
         self.children.push(element);
     }

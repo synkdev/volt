@@ -153,4 +153,8 @@ impl Button {
             z_index: 1,
         }
     }
+
+    pub fn into(self) -> Box<Button> {
+        Box::new(self)
+    }
 }

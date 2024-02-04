@@ -18,6 +18,7 @@ pub struct Div {
     pub dirty: bool,
     pub hovered: bool,
     pub clicked: bool,
+    pub full_redraw: bool,
 }
 
 impl Element for Div {
@@ -123,6 +124,7 @@ impl Div {
             position: (0.0, 0.0),
             border_width: 2.0,
             border_color: Color::GRAY,
+            full_redraw: true,
         }
     }
 

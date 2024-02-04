@@ -1,4 +1,4 @@
-use crate::ui::{Component, Element};
+use crate::ui::Element;
 
 use super::Context;
 use glutin::prelude::GlSurface;

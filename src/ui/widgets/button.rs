@@ -1,5 +1,5 @@
 use crate::font_style;
-use crate::ui::{Color, Element, Widget};
+use crate::ui::{Color::Hex, Element};
 
 #[derive(Copy, Debug, Clone)]
 pub struct Button {
@@ -148,5 +148,31 @@ impl Element for Button {
 
     fn set_clicked(&mut self, value: bool) {
         self.clicked = value
+    }
+}
+
+impl Button {
+    pub fn new() -> Self {
+        Button {
+            text: "Button",
+            size: (200.0, 50.0),
+            position: (0.0, 0.0),
+            fill: Hex("#313244").into().unwrap(),
+            radius: 10.0,
+            font_size: 16.0,
+            color: Hex("#cdd6f4").into().unwrap(),
+            border_color: Hex("#f38ba8").into().unwrap(),
+            border_width: 2.0,
+            font_style: font_style::Slant::Upright,
+            font_weight: font_style::Weight::NORMAL,
+            font_family: "JetBrains Mono",
+            on_click: |_| {},
+            on_click_release: |_| {},
+            on_hover_enter: |_| {},
+            on_hover_leave: |_| {},
+            dirty: true,
+            clicked: true,
+            hovered: false,
+        }
     }
 }

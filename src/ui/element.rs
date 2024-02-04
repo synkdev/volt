@@ -3,7 +3,7 @@ use skia::{Canvas, Paint};
 
 pub trait Element: Downcast {
     /// Function to render the element;
-    fn render(&self, canvas: Canvas, paint: Paint);
+    fn render(&self, canvas: &Canvas, paint: &mut Paint);
 
     /// Handlers
     /// Function to call when element is clicked
@@ -18,11 +18,11 @@ pub trait Element: Downcast {
 
     /// Getters
     /// Check if the element is clicked
-    fn is_clicked(&mut self) -> bool;
+    fn is_clicked(&self) -> bool;
     /// Check if the element is hovered
-    fn is_hovered(&mut self) -> bool;
+    fn is_hovered(&self) -> bool;
     /// Check if the element is dirt. The element is only rendered if it is dirty
-    fn is_dirty(&mut self) -> bool;
+    fn is_dirty(&self) -> bool;
     /// Get the bounds of the element. Used for check if mouse is under an element
     fn get_bounds(&self) -> skia::Rect;
 

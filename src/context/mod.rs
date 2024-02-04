@@ -1,11 +1,10 @@
 pub mod events;
 pub mod render;
 
-use crate::ui::Element;
+use crate::ui::Layer;
 use crate::window::options::WindowOptions;
 use crate::window::{config::GraphicsContext, surface::SkiaSurface, Window};
 use skia::{Color, Paint};
-use std::collections::HashMap;
 use winit::{event::Modifiers, event_loop::EventLoop};
 
 pub struct Context {
@@ -17,8 +16,7 @@ pub struct Context {
     dirty: bool,
     background: Color,
     paint: Paint,
-    pub components: HashMap<String, Box<dyn Element>>,
-    pub dirty_components: Vec<String>,
+    layers: Vec<Box<dyn Layer>>,
 }
 
 impl Context {
@@ -40,16 +38,13 @@ impl Context {
             modifiers,
             dirty: true,
             paint,
-            dirty_components: Vec::new(),
-            components: HashMap::new(),
+            layers: Vec::new(),
             background: options.background.into().unwrap(),
         })
     }
 
-    pub fn add(&mut self, id: &'static str, component: Box<dyn Element>) {
-        self.components.insert(id.to_string(), component);
-        self.dirty = true;
-        self.render();
+    pub fn add_layer(&mut self, layer: &dyn Layer) {
+        self.layers.push(Box::new(layer));
     }
 
     pub fn run(&mut self) -> anyhow::Result<()> {

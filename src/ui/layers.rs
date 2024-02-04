@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::Element;
 
 pub trait Layer: Element {

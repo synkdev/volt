@@ -7,5 +7,5 @@ pub mod widget;
 
 pub use color::Color;
 pub use element::Element;
-pub use layers::{Layer, Layers};
+pub use layers::Layer;
 pub use widget::Widget;

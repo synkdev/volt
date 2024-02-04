@@ -10,7 +10,6 @@ pub trait Element: Downcast {
     fn on_click(&mut self);
     /// Function to call when the click is released
     fn on_click_release(&mut self);
-
     /// Function to call when the mouse enters the element
     fn on_hover_enter(&mut self);
     /// Function to call when the mouse leaves the element
@@ -25,6 +24,8 @@ pub trait Element: Downcast {
     fn is_dirty(&self) -> bool;
     /// Get the bounds of the element. Used for check if mouse is under an element
     fn get_bounds(&self) -> skia::Rect;
+    /// Get Z-index of the element
+    fn get_z_index(&self) -> usize;
 
     /// Setters
     /// Set whether the element is clicked or not
@@ -33,9 +34,8 @@ pub trait Element: Downcast {
     fn set_hovered(&mut self, value: bool);
     /// Set whether the element is dirty or not
     fn set_dirty(&mut self, value: bool);
-
-    /// Misc
-    fn equals(&self, other: &dyn Element) -> bool;
+    /// Set the Z-index of the element
+    fn set_z_index(&mut self, index: usize);
 }
 
 impl_downcast!(Element);

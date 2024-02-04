@@ -1,6 +1,6 @@
 use skia::Color;
 
-use crate::ui::{Color::Hex, Element};
+use crate::ui::Element;
 
 pub struct Div {
     pub children: Vec<Box<dyn Element>>,
@@ -27,7 +27,7 @@ impl Element for Div {
 
         paint.set_anti_alias(true);
 
-        // Draw button box
+        // Draw div box
         paint.set_color(self.fill);
         paint.set_style(skia::PaintStyle::Fill);
 
@@ -39,20 +39,6 @@ impl Element for Div {
         paint.set_stroke_width(self.border_width);
 
         canvas.draw_round_rect(rect, self.radius, self.radius, &paint);
-
-        // Draw text
-    }
-
-    fn equals(&self, other: &dyn Element) -> bool {
-        if let Some(other_component) = other.downcast_ref::<Div>() {
-            // return compare_fields!(
-            //     self, other_component; fill
-            // );
-            return self.fill == other_component.fill;
-        } else {
-            println!("no compare");
-            return false;
-        }
     }
 
     fn on_click(&mut self) {
@@ -97,6 +83,14 @@ impl Element for Div {
 
     fn set_clicked(&mut self, value: bool) {
         self.clicked = value
+    }
+
+    fn get_z_index(&self) -> usize {
+        self.z_index
+    }
+
+    fn set_z_index(&mut self, index: usize) {
+        self.z_index = index;
     }
 }
 

@@ -1,6 +1,7 @@
+use skia::Color;
+
 use crate::ui::{Color::Hex, Element};
 
-#[derive(Clone)]
 pub struct Div {
     pub children: Vec<Box<dyn Element>>,
     pub z_index: usize,
@@ -63,40 +64,11 @@ impl Element for Div {
     }
 
     fn on_hover_enter(&mut self) {
-        let old_state = self.clone();
-
-        {
-            (self.on_hover_enter)(self);
-        }
-
-        println!("value of equals on enter: {}", self.equals(&old_state));
-        println!(
-            "old fill: {:?};   new fill: {:?}",
-            old_state.fill, self.fill
-        );
-
-        if self.equals(&old_state) {
-            self.set_dirty(false);
-        } else {
-            self.set_dirty(true);
-        }
+        (self.on_hover_enter)(self);
     }
 
     fn on_hover_leave(&mut self) {
-        let old_state = self.clone();
-
         (self.on_hover_leave)(self);
-
-        println!("value of equals on leave: {}", self.equals(&old_state));
-        println!(
-            "old fill: {:?};   new fill: {:?}",
-            old_state.fill, self.fill
-        );
-        if !self.equals(&old_state) {
-            self.set_dirty(false);
-        } else {
-            self.set_dirty(true);
-        }
     }
 
     fn get_bounds(&self) -> skia::Rect {
@@ -125,5 +97,27 @@ impl Element for Div {
 
     fn set_clicked(&mut self, value: bool) {
         self.clicked = value
+    }
+}
+
+impl Div {
+    pub fn new() -> Self {
+        Div {
+            children: Vec::new(),
+            on_hover_enter: |_| {},
+            on_hover_leave: |_| {},
+            on_click: |_| {},
+            on_click_release: |_| {},
+            clicked: false,
+            fill: Color::TRANSPARENT,
+            size: (400.0, 400.0),
+            dirty: false,
+            radius: 0.0,
+            z_index: 0,
+            hovered: false,
+            position: (0.0, 0.0),
+            border_width: 2.0,
+            border_color: Color::GRAY,
+        }
     }
 }

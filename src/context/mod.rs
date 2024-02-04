@@ -1,7 +1,7 @@
 pub mod events;
 pub mod render;
 
-use crate::ui::Layer;
+use crate::ui::elements::div::Div;
 use crate::window::options::WindowOptions;
 use crate::window::{config::GraphicsContext, surface::SkiaSurface, Window};
 use skia::{Color, Paint};
@@ -16,7 +16,7 @@ pub struct Context {
     dirty: bool,
     background: Color,
     paint: Paint,
-    layers: Vec<Box<dyn Layer>>,
+    root: Div,
 }
 
 impl Context {
@@ -38,13 +38,9 @@ impl Context {
             modifiers,
             dirty: true,
             paint,
-            layers: Vec::new(),
+            root: Div::new(),
             background: options.background.into().unwrap(),
         })
-    }
-
-    pub fn add_layer(&mut self, layer: &dyn Layer) {
-        self.layers.push(Box::new(layer));
     }
 
     pub fn run(&mut self) -> anyhow::Result<()> {

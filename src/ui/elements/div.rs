@@ -25,8 +25,6 @@ impl Element for Div {
         let rect =
             skia::Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1);
 
-        paint.set_anti_alias(true);
-
         // Draw div box
         paint.set_color(self.fill);
         paint.set_style(skia::PaintStyle::Fill);
@@ -92,6 +90,19 @@ impl Element for Div {
     fn set_z_index(&mut self, index: usize) {
         self.z_index = index;
     }
+
+    fn mouse_moved(&mut self, position: (f32, f32)) {
+        println!("moved");
+    }
+
+    fn mouse_input(
+        &mut self,
+        state: winit::event::ElementState,
+        button: winit::event::MouseButton,
+        position: (f32, f32),
+    ) {
+        println!("clicked?");
+    }
 }
 
 impl Div {
@@ -113,5 +124,9 @@ impl Div {
             border_width: 2.0,
             border_color: Color::GRAY,
         }
+    }
+
+    pub fn add(&mut self, element: Box<dyn Element>) {
+        self.children.push(element);
     }
 }

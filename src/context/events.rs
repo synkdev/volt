@@ -4,45 +4,14 @@ use glutin::{config::GlConfig, prelude::GlSurface};
 use skia::gpu::gl::FramebufferInfo;
 use std::num::NonZeroU32;
 use winit::{
-    event::{Event, KeyEvent, MouseButton, WindowEvent},
+    event::{Event, KeyEvent, WindowEvent},
     event_loop::EventLoopWindowTarget,
 };
 
 use super::Context;
-use crate::helpers::active_element;
+use crate::ui::Element;
 
 impl Context {
-    pub fn process_click(&mut self, button: MouseButton, position: (f32, f32)) {
-        if button == MouseButton::Left {
-            match active_element(&mut self.components, position) {
-                Some((_, component)) => component.on_click(),
-                None => return,
-            }
-        }
-        self.render();
-    }
-
-    pub fn process_hover(&mut self, position: (f32, f32)) {
-        match active_element(&mut self.components, position) {
-            Some((_, component)) => {
-                component.set_hovered(true);
-                component.on_hover_enter();
-                // println!("button status: {:?}", component.is_dirty());
-                self.render();
-            }
-            None => {
-                for (_, component) in &mut self.components.iter_mut() {
-                    if component.is_hovered() {
-                        // println!("Leaving hover");
-                        component.set_hovered(false);
-                        component.on_hover_leave();
-                    }
-                }
-                self.render();
-            }
-        }
-    }
-
     pub fn handle_events(
         &mut self,
         main_event: Event<()>,
@@ -53,7 +22,7 @@ impl Context {
             Event::WindowEvent { event, .. } => match event {
                 WindowEvent::CursorMoved { position, .. } => {
                     *cursor_pos = (position.x as f32, position.y as f32);
-                    self.process_hover(*cursor_pos);
+                    self.root.mouse_moved(*cursor_pos);
                 }
                 WindowEvent::CloseRequested => {
                     window_target.exit();
@@ -61,9 +30,7 @@ impl Context {
                 }
                 WindowEvent::ModifiersChanged(new_modifiers) => self.modifiers = new_modifiers,
                 WindowEvent::MouseInput { state, button, .. } => {
-                    if state.is_pressed() {
-                        self.process_click(button, *cursor_pos)
-                    }
+                    self.root.mouse_input(state, button, *cursor_pos);
                 }
                 WindowEvent::KeyboardInput {
                     event: KeyEvent { logical_key, .. },
@@ -99,7 +66,8 @@ impl Context {
                         NonZeroU32::new(width.max(1)).unwrap(),
                         NonZeroU32::new(height.max(1)).unwrap(),
                     );
-                    self.redraw_full();
+                    self.root.set_dirty(true);
+                    self.render();
                 }
                 WindowEvent::RedrawRequested => {
                     self.render();

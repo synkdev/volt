@@ -5,6 +5,7 @@ use crate::ui::{Color::Hex, Element};
 pub struct Button {
     pub text: &'static str,
     pub position: (f32, f32),
+    pub z_index: usize,
     pub size: (f32, f32),
     pub color: skia::Color,
     pub fill: skia::Color,
@@ -28,8 +29,6 @@ impl Element for Button {
     fn render(&self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint) {
         let rect =
             skia::Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1);
-
-        paint.set_anti_alias(true);
 
         // Draw button box
         paint.set_color(self.fill);
@@ -65,18 +64,6 @@ impl Element for Button {
         canvas.draw_text_blob(text, (text_x, text_y), &paint);
     }
 
-    fn equals(&self, other: &dyn Element) -> bool {
-        if let Some(other_component) = other.downcast_ref::<Button>() {
-            // return compare_fields!(
-            //     self, other_component; fill
-            // );
-            return self.fill == other_component.fill;
-        } else {
-            println!("no compare");
-            return false;
-        }
-    }
-
     fn on_click(&mut self) {
         (self.on_click)(self)
     }
@@ -86,40 +73,11 @@ impl Element for Button {
     }
 
     fn on_hover_enter(&mut self) {
-        let old_state = self.clone();
-
-        {
-            (self.on_hover_enter)(self);
-        }
-
-        println!("value of equals on enter: {}", self.equals(&old_state));
-        println!(
-            "old fill: {:?};   new fill: {:?}",
-            old_state.fill, self.fill
-        );
-
-        if self.equals(&old_state) {
-            self.set_dirty(false);
-        } else {
-            self.set_dirty(true);
-        }
+        (self.on_hover_enter)(self);
     }
 
     fn on_hover_leave(&mut self) {
-        let old_state = self.clone();
-
         (self.on_hover_leave)(self);
-
-        println!("value of equals on leave: {}", self.equals(&old_state));
-        println!(
-            "old fill: {:?};   new fill: {:?}",
-            old_state.fill, self.fill
-        );
-        if !self.equals(&old_state) {
-            self.set_dirty(false);
-        } else {
-            self.set_dirty(true);
-        }
     }
 
     fn get_bounds(&self) -> skia::Rect {
@@ -149,6 +107,25 @@ impl Element for Button {
     fn set_clicked(&mut self, value: bool) {
         self.clicked = value
     }
+
+    fn get_z_index(&self) -> usize {
+        self.z_index
+    }
+    fn set_z_index(&mut self, index: usize) {
+        self.z_index = index;
+    }
+    fn mouse_moved(&mut self, position: (f32, f32)) {
+        println!("moved");
+    }
+
+    fn mouse_input(
+        &mut self,
+        state: winit::event::ElementState,
+        button: winit::event::MouseButton,
+        position: (f32, f32),
+    ) {
+        println!("clicked?");
+    }
 }
 
 impl Button {
@@ -173,6 +150,7 @@ impl Button {
             dirty: true,
             clicked: true,
             hovered: false,
+            z_index: 1,
         }
     }
 }

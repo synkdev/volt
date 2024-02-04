@@ -1,9 +1,16 @@
 use downcast_rs::{impl_downcast, Downcast};
 use skia::{Canvas, Paint};
+use winit::event::{ElementState, MouseButton};
 
 pub trait Element: Downcast {
     /// Function to render the element;
     fn render(&self, canvas: &Canvas, paint: &mut Paint);
+
+    /// Events
+    /// Mouse movement
+    fn mouse_moved(&mut self, position: (f32, f32));
+    /// Mouse click
+    fn mouse_input(&mut self, state: ElementState, button: MouseButton, position: (f32, f32));
 
     /// Handlers
     /// Function to call when element is clicked

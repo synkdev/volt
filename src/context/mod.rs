@@ -28,7 +28,9 @@ impl Context {
         let surface = SkiaSurface::new(&window);
 
         let modifiers = Modifiers::default();
-        let paint = Paint::default();
+        let mut paint = Paint::default();
+
+        paint.set_anti_alias(true);
 
         Ok(Context {
             event_loop: Some(event_loop),

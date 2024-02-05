@@ -1,8 +1,7 @@
-use downcast_rs::{impl_downcast, Downcast};
 use skia::{Canvas, Paint};
 use winit::event::{ElementState, MouseButton};
 
-pub trait Element: Downcast {
+pub trait Element {
     /// Function to render the element;
     fn render(&self, canvas: &Canvas, paint: &mut Paint);
 
@@ -44,5 +43,3 @@ pub trait Element: Downcast {
     /// Set the Z-index of the element
     fn set_z_index(&mut self, index: usize);
 }
-
-impl_downcast!(Element);

@@ -66,6 +66,7 @@ impl Context {
                         NonZeroU32::new(width.max(1)).unwrap(),
                         NonZeroU32::new(height.max(1)).unwrap(),
                     );
+                    self.root.full_redraw = true;
                     self.root.set_dirty(true);
                     self.render();
                 }

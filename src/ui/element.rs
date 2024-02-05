@@ -1,4 +1,4 @@
-use skia::{Canvas, Paint};
+use skia::{Canvas, Contains, Paint};
 use winit::event::{ElementState, MouseButton};
 
 pub trait Element {
@@ -47,13 +47,12 @@ pub trait Element {
 pub(crate) fn get_active_element(
     elements: &mut Vec<Box<dyn Element>>,
     position: (f32, f32),
-) -> Some<Box<dyn Element>> {
+) -> Option<&mut Box<dyn Element>> {
     for element in elements.iter_mut() {
         let bounds = element.get_bounds();
-        if rect.contains(skia::Point::from(position)) {
+        if bounds.contains(skia::Point::from(position)) {
             return Some(element);
-        } else {
-            return None;
         }
     }
+    None
 }

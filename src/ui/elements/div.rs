@@ -60,6 +60,7 @@ impl Element for Div {
                 child.render(canvas, paint);
             }
         }
+
         canvas.restore();
     }
 

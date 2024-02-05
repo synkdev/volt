@@ -23,7 +23,7 @@ pub struct Div {
 }
 
 impl Element for Div {
-    fn render(&self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint) {
+    fn render(&mut self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint) {
         let border_offset = self.border_width / 2.0;
         let rect = Rect::from_xywh(
             self.position.0 + border_offset,
@@ -52,6 +52,14 @@ impl Element for Div {
         paint.set_stroke_width(self.border_width);
 
         canvas.draw_round_rect(rect, self.radius, self.radius, &paint);
+
+        // Draw children
+        self.order_children();
+        for child in self.children.iter_mut() {
+            if child.is_dirty() {
+                child.render(canvas, paint);
+            }
+        }
     }
 
     fn on_click(&mut self) {
@@ -148,5 +156,10 @@ impl Div {
 
     pub fn add(&mut self, element: Box<dyn Element>) {
         self.children.push(element);
+    }
+
+    pub fn order_children(&mut self) {
+        self.children
+            .sort_by(|a, b| a.get_z_index().cmp(&b.get_z_index()));
     }
 }

@@ -3,7 +3,7 @@ use winit::event::{ElementState, MouseButton};
 
 pub trait Element {
     /// Function to render the element;
-    fn render(&self, canvas: &Canvas, paint: &mut Paint);
+    fn render(&mut self, canvas: &Canvas, paint: &mut Paint);
 
     /// Events
     /// Mouse movement

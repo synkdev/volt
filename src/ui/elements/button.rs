@@ -26,7 +26,7 @@ pub struct Button {
 }
 
 impl Element for Button {
-    fn render(&self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint) {
+    fn render(&mut self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint) {
         let rect =
             skia::Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1);
 

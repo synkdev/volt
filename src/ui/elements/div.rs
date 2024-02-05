@@ -22,7 +22,7 @@ pub struct Div {
     pub hovered: bool,
     pub clicked: bool,
     pub full_redraw: bool,
-    pub active_element: Option<Box<dyn Element>>,
+    pub active_element: Option<usize>,
 }
 
 impl Element for Div {
@@ -120,24 +120,26 @@ impl Element for Div {
     }
 
     fn mouse_moved(&mut self, position: (f32, f32)) {
-        let (new_active_element, event_type) =
-            get_active_element(&mut self.children, self.active_element.as_mut(), position);
+        self.order_children();
 
-        match (self.active_element.as_mut(), new_active_element, event_type) {
-            (Some(active_element), Some(new_element), MouseEventType::Entered) => {
-                active_element.on_hover_leave();
-                self.active_element = Some(new_element);
-                new_element.on_hover_enter();
+        let (new_active_element, event_type) =
+            get_active_element(&mut self.children, self.active_element, position);
+
+        match (self.active_element, new_active_element, event_type) {
+            (Some(active_element), Some(index), MouseEventType::Entered) => {
+                self.children[active_element].on_hover_leave();
+                self.active_element = Some(index);
+                self.children[index].on_hover_enter();
             }
 
             (Some(active_element), None, MouseEventType::Exited) => {
-                active_element.on_hover_leave();
+                self.children[active_element].on_hover_leave();
                 self.active_element = None;
             }
 
             (None, Some(new_element), MouseEventType::Entered) => {
                 self.active_element = Some(new_element);
-                new_element.on_hover_enter();
+                self.children[new_element].on_hover_enter();
             }
             _ => {}
         }

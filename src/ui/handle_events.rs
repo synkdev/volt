@@ -9,22 +9,21 @@ pub(crate) enum MouseEventType {
 
 pub(crate) fn get_active_element<'t>(
     elements: &'t mut Vec<Box<dyn Element>>,
-    active_element: Option<&mut Box<dyn Element>>,
+    active_element: Option<usize>,
     position: (f32, f32),
-) -> (Option<&'t mut Box<dyn Element>>, MouseEventType) {
-    for element in elements.iter_mut() {
+) -> (Option<usize>, MouseEventType) {
+    for (index, element) in elements.iter_mut().enumerate() {
         let bounds = element.get_bounds();
         if bounds.contains(skia::Point::from(position)) {
             return match active_element {
-                Some(curr_element) if std::ptr::eq(curr_element.as_ref(), element.as_ref()) => {
-                    (Some(element), MouseEventType::None)
-                }
-                _ => (Some(element), MouseEventType::Entered),
+                Some(active_index) if active_index == index => (Some(index), MouseEventType::None),
+                _ => (Some(index), MouseEventType::Entered),
             };
         }
     }
+
     match active_element {
-        Some(_) => return (None, MouseEventType::Exited),
-        None => return (None, MouseEventType::None),
+        Some(_) => (None, MouseEventType::Exited),
+        None => (None, MouseEventType::None),
     }
 }

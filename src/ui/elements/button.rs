@@ -73,10 +73,12 @@ impl Element for Button {
     }
 
     fn on_hover_enter(&mut self) {
+        println!("hovered");
         (self.on_hover_enter)(self);
     }
 
     fn on_hover_leave(&mut self) {
+        println!("hover leave");
         (self.on_hover_leave)(self);
     }
 
@@ -114,9 +116,7 @@ impl Element for Button {
     fn set_z_index(&mut self, index: usize) {
         self.z_index = index;
     }
-    fn mouse_moved(&mut self, position: (f32, f32)) {
-        println!("moved");
-    }
+    fn mouse_moved(&mut self, position: (f32, f32)) {}
 
     fn mouse_input(
         &mut self,

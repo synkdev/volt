@@ -32,12 +32,6 @@ impl Element for Div {
             self.size.1,
         );
 
-        // let clipped_rect = Rect::new(
-        //     rect.left() - border_offset,
-        //     rect.top() - border_offset,
-        //     rect.right() + border_offset,
-        //     rect.bottom() + border_offset,
-        // );
         let clipped_rect = Rect::from_xywh(
             rect.left(),
             rect.top() + border_offset,

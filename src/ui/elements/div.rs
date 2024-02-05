@@ -1,6 +1,7 @@
 use skia::Color;
 use skia::Rect;
 
+use crate::ui::handle_events::get_active_element;
 use crate::ui::Element;
 
 pub struct Div {
@@ -20,6 +21,7 @@ pub struct Div {
     pub hovered: bool,
     pub clicked: bool,
     pub full_redraw: bool,
+    pub active_element: Option<Box<dyn Element>>,
 }
 
 impl Element for Div {
@@ -117,7 +119,10 @@ impl Element for Div {
     }
 
     fn mouse_moved(&mut self, position: (f32, f32)) {
-        println!("moved");
+        let (new_active_element, event_type) =
+            get_active_element(&mut self.children, self.active_element.as_mut(), position);
+
+        match (self.active_element.as_mut(), new_active_element, event_type) {}
     }
 
     fn mouse_input(
@@ -149,6 +154,7 @@ impl Div {
             border_width: 5.0,
             border_color: Color::GRAY,
             full_redraw: true,
+            active_element: None,
         }
     }
 

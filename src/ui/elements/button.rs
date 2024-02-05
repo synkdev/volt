@@ -134,7 +134,7 @@ impl Button {
             text: "Click me!",
             size: (200.0, 50.0),
             position: (20.0, 20.0),
-            fill: Hex("#313244").into().unwrap(),
+            fill: Hex("#303446").into().unwrap(),
             radius: 10.0,
             font_size: 16.0,
             color: Hex("#cdd6f4").into().unwrap(),

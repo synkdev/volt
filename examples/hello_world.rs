@@ -1,5 +1,5 @@
 use volt::{
-    ui::{elements::button::Button, Color},
+    ui::{elements::button::Button, Color, Element},
     Volt,
 };
 
@@ -33,6 +33,12 @@ fn main() {
         //     );
         //     // somth
         // });
+        let mut second_button = Button::new();
+        second_button.set_z_index(20);
+        second_button.text = "hahaha";
+        second_button.position = (80.0, 20.0);
+
         cx.root.add(Button::new().into());
+        cx.root.add(second_button.into());
     });
 }

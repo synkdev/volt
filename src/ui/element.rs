@@ -1,4 +1,4 @@
-use skia::{Canvas, Contains, Paint};
+use skia::{Canvas, Paint};
 use winit::event::{ElementState, MouseButton};
 
 pub trait Element {

@@ -32,14 +32,18 @@ impl Element for Div {
             self.size.1,
         );
 
-        let clipped_rect = Rect::new(
-            rect.left() - border_offset,
-            rect.top() - border_offset,
-            rect.right() + border_offset,
-            rect.bottom() + border_offset,
+        // let clipped_rect = Rect::new(
+        //     rect.left() - border_offset,
+        //     rect.top() - border_offset,
+        //     rect.right() + border_offset,
+        //     rect.bottom() + border_offset,
+        // );
+        let clipped_rect = Rect::from_xywh(
+            rect.left(),
+            rect.top() + border_offset,
+            rect.width() - border_offset,
+            rect.height() - border_offset,
         );
-        canvas.clip_rect(clipped_rect, None, Some(true));
-
         // Draw div box
         paint.set_color(self.fill);
         paint.set_style(skia::PaintStyle::Fill);
@@ -53,6 +57,8 @@ impl Element for Div {
 
         canvas.draw_round_rect(rect, self.radius, self.radius, &paint);
 
+        canvas.clip_rect(clipped_rect, None, Some(true));
+
         // Draw children
         self.order_children();
         for child in self.children.iter_mut() {
@@ -60,6 +66,7 @@ impl Element for Div {
                 child.render(canvas, paint);
             }
         }
+        canvas.restore();
     }
 
     fn on_click(&mut self) {

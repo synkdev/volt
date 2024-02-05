@@ -132,8 +132,8 @@ impl Button {
     pub fn new() -> Self {
         Button {
             text: "Button",
-            size: (200.0, 50.0),
-            position: (0.0, 0.0),
+            size: (250.0, 50.0),
+            position: (200.0, 0.0),
             fill: Hex("#313244").into().unwrap(),
             radius: 10.0,
             font_size: 16.0,

@@ -1,3 +1,4 @@
+use crate::ui::handle_events::MouseEventType;
 use skia::Color;
 use skia::Rect;
 
@@ -122,7 +123,24 @@ impl Element for Div {
         let (new_active_element, event_type) =
             get_active_element(&mut self.children, self.active_element.as_mut(), position);
 
-        match (self.active_element.as_mut(), new_active_element, event_type) {}
+        match (self.active_element.as_mut(), new_active_element, event_type) {
+            (Some(active_element), Some(new_element), MouseEventType::Entered) => {
+                active_element.on_hover_leave();
+                self.active_element = Some(new_element);
+                new_element.on_hover_enter();
+            }
+
+            (Some(active_element), None, MouseEventType::Exited) => {
+                active_element.on_hover_leave();
+                self.active_element = None;
+            }
+
+            (None, Some(new_element), MouseEventType::Entered) => {
+                self.active_element = Some(new_element);
+                new_element.on_hover_enter();
+            }
+            _ => {}
+        }
     }
 
     fn mouse_input(

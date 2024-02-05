@@ -1,4 +1,5 @@
 use skia::Color;
+use skia::Rect;
 
 use crate::ui::Element;
 
@@ -23,8 +24,21 @@ pub struct Div {
 
 impl Element for Div {
     fn render(&self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint) {
-        let rect =
-            skia::Rect::from_xywh(self.position.0, self.position.1, self.size.0, self.size.1);
+        let border_offset = self.border_width / 2.0;
+        let rect = Rect::from_xywh(
+            self.position.0 + border_offset,
+            self.position.1 + border_offset,
+            self.size.0,
+            self.size.1,
+        );
+
+        let clipped_rect = Rect::new(
+            rect.left() - border_offset,
+            rect.top() - border_offset,
+            rect.right() + border_offset,
+            rect.bottom() + border_offset,
+        );
+        canvas.clip_rect(clipped_rect, None, Some(true));
 
         // Draw div box
         paint.set_color(self.fill);
@@ -122,7 +136,7 @@ impl Div {
             z_index: 0,
             hovered: false,
             position: (0.0, 0.0),
-            border_width: 2.0,
+            border_width: 5.0,
             border_color: Color::GRAY,
             full_redraw: true,
         }

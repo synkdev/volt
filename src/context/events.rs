@@ -23,7 +23,12 @@ impl Context {
                 WindowEvent::CursorMoved { position, .. } => {
                     *cursor_pos = (position.x as f32, position.y as f32);
                     self.root.mouse_moved(*cursor_pos);
-                    self.render();
+                    let canvas = self.surface.surface.canvas();
+                    if !self.root.is_dirty() {
+                        self.root.render_children(canvas, &mut self.paint);
+                    } else {
+                        self.root.render(canvas, &mut self.paint)
+                    }
                 }
                 WindowEvent::CloseRequested => {
                     window_target.exit();

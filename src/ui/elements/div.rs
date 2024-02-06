@@ -61,15 +61,12 @@ impl Element for Div {
         canvas.clip_rect(clipped_rect, None, Some(true));
 
         // Draw children
-        self.order_children();
-        for child in self.children.iter_mut() {
-            if self.full_redraw {
+        if self.full_redraw {
+            for child in self.children.iter_mut() {
                 child.render(canvas, paint);
-            } else {
-                if child.is_dirty() {
-                    child.render(canvas, paint)
-                }
             }
+        } else {
+            self.render_children(canvas, paint);
         }
         canvas.restore();
     }
@@ -150,8 +147,6 @@ impl Element for Div {
             }
             _ => {}
         }
-
-        self.find_dirty_children();
     }
 
     fn mouse_input(
@@ -211,6 +206,7 @@ impl Div {
 
     pub fn render_children(&mut self, canvas: &Canvas, paint: &mut Paint) {
         self.find_dirty_children();
+        self.order_children();
         if self.dirty_children.len() != 0 {
             for child in &self.dirty_children {
                 self.children[*child].render(canvas, paint)

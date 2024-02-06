@@ -1,4 +1,5 @@
 use crate::font_style;
+use crate::ui::Color;
 use crate::ui::{Color::Hex, Element};
 
 #[derive(Copy, Debug, Clone)]
@@ -145,7 +146,10 @@ impl Button {
             font_family: "JetBrains Mono",
             on_click: |_| {},
             on_click_release: |_| {},
-            on_hover_enter: |_| {},
+            on_hover_enter: |btn| {
+                btn.fill = Color::Hex("cdd6f4").into().unwrap();
+                btn.set_dirty(true);
+            },
             on_hover_leave: |_| {},
             dirty: true,
             clicked: true,

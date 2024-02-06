@@ -23,6 +23,7 @@ impl Context {
                 WindowEvent::CursorMoved { position, .. } => {
                     *cursor_pos = (position.x as f32, position.y as f32);
                     self.root.mouse_moved(*cursor_pos);
+                    self.render();
                 }
                 WindowEvent::CloseRequested => {
                     window_target.exit();
@@ -31,6 +32,7 @@ impl Context {
                 WindowEvent::ModifiersChanged(new_modifiers) => self.modifiers = new_modifiers,
                 WindowEvent::MouseInput { state, button, .. } => {
                     self.root.mouse_input(state, button, *cursor_pos);
+                    self.render();
                 }
                 WindowEvent::KeyboardInput {
                     event: KeyEvent { logical_key, .. },

@@ -1,5 +1,7 @@
 use crate::ui::handle_events::MouseEventType;
+use skia::Canvas;
 use skia::Color;
+use skia::Paint;
 use skia::Rect;
 
 use crate::ui::handle_events::get_active_element;
@@ -23,10 +25,12 @@ pub struct Div {
     pub clicked: bool,
     pub full_redraw: bool,
     pub active_element: Option<usize>,
+    pub dirty_children: Vec<usize>,
 }
 
 impl Element for Div {
     fn render(&mut self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint) {
+        println!("rendering");
         let border_offset = self.border_width / 2.0;
         let rect = Rect::from_xywh(
             self.position.0 + border_offset,
@@ -59,11 +63,14 @@ impl Element for Div {
         // Draw children
         self.order_children();
         for child in self.children.iter_mut() {
-            if child.is_dirty() {
+            if self.full_redraw {
                 child.render(canvas, paint);
+            } else {
+                if child.is_dirty() {
+                    child.render(canvas, paint)
+                }
             }
         }
-
         canvas.restore();
     }
 
@@ -143,6 +150,8 @@ impl Element for Div {
             }
             _ => {}
         }
+
+        self.find_dirty_children();
     }
 
     fn mouse_input(
@@ -175,6 +184,7 @@ impl Div {
             border_color: Color::GRAY,
             full_redraw: true,
             active_element: None,
+            dirty_children: Vec::new(),
         }
     }
 
@@ -189,5 +199,22 @@ impl Div {
     pub fn order_children(&mut self) {
         self.children
             .sort_by(|a, b| a.get_z_index().cmp(&b.get_z_index()));
+    }
+
+    pub fn find_dirty_children(&mut self) {
+        for (index, child) in self.children.iter().enumerate() {
+            if child.is_dirty() {
+                self.dirty_children.push(index);
+            }
+        }
+    }
+
+    pub fn render_children(&mut self, canvas: &Canvas, paint: &mut Paint) {
+        self.find_dirty_children();
+        if self.dirty_children.len() != 0 {
+            for child in &self.dirty_children {
+                self.children[*child].render(canvas, paint)
+            }
+        }
     }
 }

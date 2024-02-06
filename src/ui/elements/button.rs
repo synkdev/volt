@@ -150,7 +150,10 @@ impl Button {
                 btn.fill = Color::Hex("cdd6f4").into().unwrap();
                 btn.set_dirty(true);
             },
-            on_hover_leave: |_| {},
+            on_hover_leave: |btn| {
+                btn.fill = Color::Hex("303446").into().unwrap();
+                btn.set_dirty(true);
+            },
             dirty: true,
             clicked: true,
             hovered: false,

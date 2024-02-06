@@ -10,11 +10,9 @@ impl Context {
             canvas.clear(self.background);
             self.root.full_redraw = false;
         }
-        if self.root.dirty {
-            self.root.render(canvas, &mut self.paint);
-            self.root.set_dirty(false);
-            self.finish_render();
-        }
+        self.root.render(canvas, &mut self.paint);
+        self.root.set_dirty(false);
+        self.finish_render();
     }
 
     pub fn finish_render(&mut self) {

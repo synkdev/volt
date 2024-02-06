@@ -30,45 +30,45 @@ pub struct Div {
 
 impl Element for Div {
     fn render(&mut self, canvas: &skia::canvas::Canvas, paint: &mut skia::Paint) {
-        println!("rendering");
-        let border_offset = self.border_width / 2.0;
-        let rect = Rect::from_xywh(
-            self.position.0 + border_offset,
-            self.position.1 + border_offset,
-            self.size.0,
-            self.size.1,
-        );
+        if self.is_dirty() {
+            println!("rendering");
+            let border_offset = self.border_width / 2.0;
+            let rect = Rect::from_xywh(
+                self.position.0 + border_offset,
+                self.position.1 + border_offset,
+                self.size.0,
+                self.size.1,
+            );
 
-        let clipped_rect = Rect::from_xywh(
-            rect.left(),
-            rect.top() + border_offset,
-            rect.width() - border_offset,
-            rect.height() - border_offset,
-        );
-        // Draw div box
-        paint.set_color(self.fill);
-        paint.set_style(skia::PaintStyle::Fill);
+            let clipped_rect = Rect::from_xywh(
+                rect.left(),
+                rect.top() + border_offset,
+                rect.width() - border_offset,
+                rect.height() - border_offset,
+            );
+            // Draw div box
+            paint.set_color(self.fill);
+            paint.set_style(skia::PaintStyle::Fill);
 
-        canvas.draw_round_rect(rect, self.radius, self.radius, &paint);
+            canvas.draw_round_rect(rect, self.radius, self.radius, &paint);
 
-        // Draw border
-        paint.set_color(self.border_color);
-        paint.set_style(skia::PaintStyle::Stroke);
-        paint.set_stroke_width(self.border_width);
+            // Draw border
+            paint.set_color(self.border_color);
+            paint.set_style(skia::PaintStyle::Stroke);
+            paint.set_stroke_width(self.border_width);
 
-        canvas.draw_round_rect(rect, self.radius, self.radius, &paint);
+            canvas.draw_round_rect(rect, self.radius, self.radius, &paint);
 
-        canvas.clip_rect(clipped_rect, None, Some(true));
+            canvas.clip_rect(clipped_rect, None, Some(true));
 
-        // Draw children
-        if self.full_redraw {
             for child in self.children.iter_mut() {
                 child.render(canvas, paint);
             }
-        } else {
-            self.render_children(canvas, paint);
         }
+
+        self.render_children(canvas, paint);
         canvas.restore();
+        self.set_dirty(false);
     }
 
     fn on_click(&mut self) {

@@ -235,7 +235,7 @@ fn get_command_buffers(
         .collect()
 }
 
-fn new() {
+pub fn new() {
     let library = vulkano::VulkanLibrary::new().expect("no local Vulkan library/DLL");
     let event_loop = EventLoop::new();
 

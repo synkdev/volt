@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-vulkano = { git = "https://github.com/vulkano-rs/vulkano" }
+vulkano = "0.34.0"
 vulkano-shaders = "0.34.0"
-winit = { git = "https://github.com/rust-windowing/winit" }
+winit = "0.28"

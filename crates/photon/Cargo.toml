@@ -6,4 +6,6 @@ edition = "2021"
 [dependencies]
 glow = { git = "https://github.com/grovesNL/glow/" }
 glutin = "0.31"
+glutin-winit = "0.4.2"
 winit = "0.29.10"
+raw-window-handle = "0.5.0"

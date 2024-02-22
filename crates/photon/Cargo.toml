@@ -5,3 +5,5 @@ edition = "2021"
 
 [dependencies]
 vulkano = { git = "https://github.com/vulkano-rs/vulkano" }
+vulkano-shaders = "0.34.0"
+winit = { git = "https://github.com/rust-windowing/winit" }

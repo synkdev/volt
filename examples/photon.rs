@@ -1,5 +1,5 @@
-use photon::new;
+use photon::launch;
 
 fn main() {
-    new();
+    launch();
 }

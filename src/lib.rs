@@ -9,8 +9,6 @@ use vello::{kurbo::Affine, util::RenderContext, AaConfig, Renderer, Scene};
 use winit::{event::*, event_loop::ControlFlow};
 use winit::{event_loop::EventLoop, window::Window};
 
-const AA_CONFIGS: [AaConfig; 3] = [AaConfig::Area, AaConfig::Msaa8, AaConfig::Msaa16];
-
 pub struct RenderState<'s> {
     surface: RenderSurface<'s>,
     window: Arc<Window>,
@@ -68,7 +66,7 @@ impl Volt {
                                 base_color: Color::BLACK,
                                 width,
                                 height,
-                                antialiasing_method: AA_CONFIGS[0],
+                                antialiasing_method: AaConfig::Msaa16,
                             };
                             let shape = RoundedRect::new(100.0, 100.0, 400.0, 400.0, 20.0);
                             let stroke = Stroke::new(2.0);

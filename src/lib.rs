@@ -14,7 +14,9 @@ pub struct RenderState<'s> {
     window: Arc<Window>,
 }
 
-pub struct Volt;
+pub struct Volt {
+    renderer: Renderer,
+}
 
 impl Volt {
     pub fn create_window(event_loop: &winit::event_loop::EventLoopWindowTarget<()>) -> Arc<Window> {

@@ -80,7 +80,7 @@ impl Volt {
                                 base_color: Color::BLACK,
                                 width,
                                 height,
-                                antialiasing_method: AA_CONFIGS[0],
+                                antialiasing_method: AA_CONFIGS[1],
                             };
                             let shape = RoundedRect::new(0.0, 0.0, 100.0, 100.0, 20.0);
                             let stroke = Stroke::new(2.0);
@@ -100,9 +100,17 @@ impl Volt {
                                     ),
                             )
                             .expect("failed to render to surface");
+                            surface_texture.present();
+                            device_handle.device.poll(wgpu::Maintain::Poll);
                         }
                         _ => {}
                     }
+                }
+                Event::Suspended => {
+                    if let Some(render_state) = render_state.take() {
+                        // cached_window = Some(render_state.window);
+                    }
+                    event_loop.set_control_flow(ControlFlow::Wait);
                 }
                 Event::Resumed => {
                     let Option::None = render_state else { return };

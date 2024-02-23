@@ -1,21 +1,13 @@
 use anyhow::Result;
-use instant::{Duration, Instant};
 use std::num::NonZeroUsize;
-use std::{collections::HashSet, sync::Arc};
+use std::sync::Arc;
 use vello::kurbo::{RoundedRect, Stroke};
 use vello::peniko::Color;
 use vello::util::RenderSurface;
-use vello::{
-    kurbo::{Affine, Vec2},
-    util::RenderContext,
-    AaConfig, Renderer, Scene,
-};
-use vello::{BumpAllocators, RendererOptions};
-use winit::{event::*, event_loop::ControlFlow, keyboard::*};
-use winit::{
-    event_loop::{EventLoop, EventLoopBuilder},
-    window::Window,
-};
+use vello::RendererOptions;
+use vello::{kurbo::Affine, util::RenderContext, AaConfig, Renderer, Scene};
+use winit::{event::*, event_loop::ControlFlow};
+use winit::{event_loop::EventLoop, window::Window};
 
 const AA_CONFIGS: [AaConfig; 3] = [AaConfig::Area, AaConfig::Msaa8, AaConfig::Msaa16];
 
@@ -43,10 +35,6 @@ impl Volt {
         let mut render_state = None::<RenderState>;
         let mut cached_window = None;
         let mut scene = Scene::new();
-        let mut scene_complexity: Option<BumpAllocators> = None;
-        let mut vsync_on = true;
-        let mut frame_start_time = Instant::now();
-        let start = Instant::now();
         event_loop
             .run(move |event, event_loop| match event {
                 Event::WindowEvent {
@@ -80,9 +68,9 @@ impl Volt {
                                 base_color: Color::BLACK,
                                 width,
                                 height,
-                                antialiasing_method: AA_CONFIGS[1],
+                                antialiasing_method: AA_CONFIGS[0],
                             };
-                            let shape = RoundedRect::new(0.0, 0.0, 100.0, 100.0, 20.0);
+                            let shape = RoundedRect::new(100.0, 100.0, 400.0, 400.0, 20.0);
                             let stroke = Stroke::new(2.0);
                             let stroke_color = Color::rgb(255.0, 255.0, 255.0);
                             scene.stroke(&stroke, Affine::IDENTITY, stroke_color, None, &shape);
@@ -149,7 +137,7 @@ impl Volt {
     }
     pub fn run() -> Result<()> {
         let event_loop = EventLoop::new()?;
-        let mut render_cx = RenderContext::new().unwrap();
+        let render_cx = RenderContext::new().unwrap();
         Self::render(event_loop, render_cx);
         Ok(())
     }

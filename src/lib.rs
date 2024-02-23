@@ -41,7 +41,7 @@ impl Volt {
     pub fn render(event_loop: EventLoop<()>, mut render_cx: RenderContext) {
         let mut renderers: Vec<Option<Renderer>> = vec![];
         let mut render_state = None::<RenderState>;
-        // let mut cached_window = None;
+        let mut cached_window = None;
         let mut scene = Scene::new();
         let mut scene_complexity: Option<BumpAllocators> = None;
         let mut vsync_on = true;
@@ -108,13 +108,15 @@ impl Volt {
                 }
                 Event::Suspended => {
                     if let Some(render_state) = render_state.take() {
-                        // cached_window = Some(render_state.window);
+                        cached_window = Some(render_state.window);
                     }
                     event_loop.set_control_flow(ControlFlow::Wait);
                 }
                 Event::Resumed => {
                     let Option::None = render_state else { return };
-                    let window = Self::create_window(event_loop);
+                    let window = cached_window
+                        .take()
+                        .unwrap_or_else(|| Self::create_window(event_loop));
                     let size = window.inner_size();
                     let surface_future =
                         render_cx.create_surface(window.clone(), size.width, size.height);

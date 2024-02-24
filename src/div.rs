@@ -60,6 +60,9 @@ impl Element for Div {
             None,
             &border_stroke,
         );
+        for child in self.children.iter_mut() {
+            child.render(scene);
+        }
     }
 }
 
@@ -72,7 +75,7 @@ impl Default for Div {
             background: Color::Hex("#313243"),
             border_width: 2.0,
             border_color: Color::Hex("#f38ba8"),
-            border_offset: BorderOffset::Outset,
+            border_offset: BorderOffset::Center,
             radius: 20.0,
         }
     }

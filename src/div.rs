@@ -18,30 +18,30 @@ impl Element for Div {
         let shape = RoundedRect::new(
             self.position.x,
             self.position.y,
-            self.size.width,
-            self.size.height,
+            self.position.x + self.size.width,
+            self.position.y + self.size.height,
             self.radius,
         );
         let border_stroke = match self.border_offset {
             BorderOffset::Outset => RoundedRect::new(
                 self.position.x + self.border_width,
                 self.position.y + self.border_width,
-                self.size.width + self.border_width,
-                self.size.height + self.border_width,
+                self.position.x + self.size.width + self.border_width,
+                self.position.y + self.size.height + self.border_width,
                 self.radius,
             ),
             BorderOffset::Inset => RoundedRect::new(
                 self.position.x - self.border_width,
                 self.position.y - self.border_width,
-                self.size.width - self.border_width,
-                self.size.height - self.border_width,
+                self.position.x + self.size.width - self.border_width,
+                self.position.y + self.size.height - self.border_width,
                 self.radius,
             ),
             BorderOffset::Center => RoundedRect::new(
                 self.position.x + (self.border_width / 2.0),
                 self.position.y + (self.border_width / 2.0),
-                self.size.width + (self.border_width / 2.0),
-                self.size.height + (self.border_width / 2.0),
+                self.position.x + self.size.width + (self.border_width / 2.0),
+                self.position.y + self.size.height + (self.border_width / 2.0),
                 self.radius,
             ),
         };

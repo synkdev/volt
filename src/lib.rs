@@ -82,7 +82,7 @@ impl Volt {
                             self.root.render(&mut scene);
                             self.root.children.push(Box::new(Div {
                                 children: vec![],
-                                size: Size::new(100.0, 100.0),
+                                size: Size::new(40.0, 40.0),
                                 position: Point::new(40.0, 40.0),
                                 background: color::Color::Hex("#f38ba8"),
                                 border_width: 0.0,
@@ -92,7 +92,7 @@ impl Volt {
                             }));
                             self.root.children.push(Box::new(Div {
                                 children: vec![],
-                                size: Size::new(140.0, 100.0),
+                                size: Size::new(40.0, 40.0),
                                 position: Point::new(80.0, 40.0),
                                 background: color::Color::Hex("#f38ba8"),
                                 border_width: 0.0,
@@ -102,7 +102,7 @@ impl Volt {
                             }));
                             self.root.children.push(Box::new(Div {
                                 children: vec![],
-                                size: Size::new(100.0, 140.0),
+                                size: Size::new(40.0, 40.0),
                                 position: Point::new(40.0, 80.0),
                                 background: color::Color::Hex("#f38ba8"),
                                 border_width: 0.0,
@@ -112,7 +112,7 @@ impl Volt {
                             }));
                             self.root.children.push(Box::new(Div {
                                 children: vec![],
-                                size: Size::new(140.0, 140.0),
+                                size: Size::new(40.0, 40.0),
                                 position: Point::new(80.0, 80.0),
                                 background: color::Color::Hex("#f38ba8"),
                                 border_width: 0.0,

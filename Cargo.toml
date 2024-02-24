@@ -3,6 +3,10 @@ name = "volt"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+wayland = []
+x11 = []
+
 [dependencies]
 anyhow = "1.0.80"
 pollster = "0.3.0"

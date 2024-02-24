@@ -5,9 +5,10 @@ pub mod styles;
 pub mod window;
 
 use anyhow::Result;
+use div::Div;
+use element::Element;
 use std::{num::NonZeroUsize, sync::Arc};
 use vello::{
-    kurbo::{Affine, RoundedRect, Stroke},
     peniko::Color,
     util::{RenderContext, RenderSurface},
     AaConfig, Renderer, RendererOptions, Scene,
@@ -25,12 +26,18 @@ pub struct RenderState<'s> {
 }
 
 pub struct Volt {
-    pub(crate) renderer: Renderer,
+    pub(crate) renderers: Vec<Option<Renderer>>,
+    pub root: Div,
 }
 
 impl Volt {
-    pub fn render(event_loop: EventLoop<()>, mut render_cx: RenderContext) {
-        let mut renderers: Vec<Option<Renderer>> = vec![];
+    pub fn new() -> Self {
+        Volt {
+            renderers: vec![],
+            root: Div::default(),
+        }
+    }
+    pub fn render(&mut self, event_loop: EventLoop<()>, mut render_cx: RenderContext) {
         let mut render_state = None::<RenderState>;
         let mut cached_window = None;
         let mut scene = Scene::new();
@@ -69,10 +76,11 @@ impl Volt {
                                 height,
                                 antialiasing_method: AaConfig::Msaa16,
                             };
-
+                            scene.reset();
+                            self.root.render(&mut scene);
                             vello::block_on_wgpu(
                                 &device_handle.device,
-                                renderers[render_state.surface.dev_id]
+                                self.renderers[render_state.surface.dev_id]
                                     .as_mut()
                                     .unwrap()
                                     .render_to_surface_async(
@@ -108,9 +116,9 @@ impl Volt {
                         pollster::block_on(surface_future).expect("Error creating surface");
                     render_state = {
                         let render_state = RenderState { window, surface };
-                        renderers.resize_with(render_cx.devices.len(), || None);
+                        self.renderers.resize_with(render_cx.devices.len(), || None);
                         let id = render_state.surface.dev_id;
-                        renderers[id].get_or_insert_with(|| {
+                        self.renderers[id].get_or_insert_with(|| {
                             eprintln!("Creating renderer {id}");
                             Renderer::new(
                                 &render_cx.devices[id].device,
@@ -134,7 +142,8 @@ impl Volt {
     pub fn run() -> Result<()> {
         let event_loop = EventLoop::new()?;
         let render_cx = RenderContext::new().unwrap();
-        Self::render(event_loop, render_cx);
+        let mut volt = Volt::new();
+        volt.render(event_loop, render_cx);
         Ok(())
     }
 }

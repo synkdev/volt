@@ -46,19 +46,19 @@ impl Element for Div {
             ),
         };
         let stroke = Stroke::new(self.border_width);
-        scene.stroke(
-            &stroke,
-            Affine::IDENTITY,
-            self.border_color.clone().into(),
-            None,
-            &border_stroke,
-        );
         scene.fill(
             vello::peniko::Fill::NonZero,
             Affine::IDENTITY,
             self.background.clone().into(),
             None,
             &shape,
+        );
+        scene.stroke(
+            &stroke,
+            Affine::IDENTITY,
+            self.border_color.clone().into(),
+            None,
+            &border_stroke,
         );
     }
 }

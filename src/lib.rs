@@ -1,4 +1,7 @@
 pub mod color;
+pub mod div;
+pub mod element;
+pub mod styles;
 pub mod window;
 
 use anyhow::Result;
@@ -11,11 +14,9 @@ use vello::{
 };
 use window::WindowOptions;
 use winit::{
-    dpi::LogicalSize,
     event::*,
     event_loop::{ControlFlow, EventLoop},
     window::Window,
-    window::WindowBuilder,
 };
 
 pub struct RenderState<'s> {
@@ -24,7 +25,7 @@ pub struct RenderState<'s> {
 }
 
 pub struct Volt {
-    renderer: Renderer,
+    pub(crate) renderer: Renderer,
 }
 
 impl Volt {
@@ -68,10 +69,7 @@ impl Volt {
                                 height,
                                 antialiasing_method: AaConfig::Msaa16,
                             };
-                            let shape = RoundedRect::new(100.0, 100.0, 400.0, 400.0, 20.0);
-                            let stroke = Stroke::new(2.0);
-                            let stroke_color = Color::rgb(255.0, 255.0, 255.0);
-                            scene.stroke(&stroke, Affine::IDENTITY, stroke_color, None, &shape);
+
                             vello::block_on_wgpu(
                                 &device_handle.device,
                                 renderers[render_state.surface.dev_id]

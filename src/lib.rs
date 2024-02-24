@@ -1,13 +1,18 @@
 use anyhow::Result;
-use std::num::NonZeroUsize;
-use std::sync::Arc;
-use vello::kurbo::{RoundedRect, Stroke};
-use vello::peniko::Color;
-use vello::util::RenderSurface;
-use vello::RendererOptions;
-use vello::{kurbo::Affine, util::RenderContext, AaConfig, Renderer, Scene};
-use winit::{event::*, event_loop::ControlFlow};
-use winit::{event_loop::EventLoop, window::Window};
+use std::{num::NonZeroUsize, sync::Arc};
+use vello::{
+    kurbo::{Affine, RoundedRect, Stroke},
+    peniko::Color,
+    util::{RenderContext, RenderSurface},
+    AaConfig, Renderer, RendererOptions, Scene,
+};
+use winit::{
+    dpi::LogicalSize,
+    event::*,
+    event_loop::{ControlFlow, EventLoop},
+    window::Window,
+    window::WindowBuilder,
+};
 
 pub struct RenderState<'s> {
     surface: RenderSurface<'s>,
@@ -20,7 +25,6 @@ pub struct Volt {
 
 impl Volt {
     pub fn create_window(event_loop: &winit::event_loop::EventLoopWindowTarget<()>) -> Arc<Window> {
-        use winit::{dpi::LogicalSize, window::WindowBuilder};
         Arc::new(
             WindowBuilder::new()
                 .with_inner_size(LogicalSize::new(1044, 800))

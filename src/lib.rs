@@ -9,9 +9,8 @@ use anyhow::Result;
 use div::Div;
 use element::Element;
 use std::{num::NonZeroUsize, sync::Arc};
-use styles::BorderOffset;
+use taffy::{style_helpers::TaffyMaxContent, Size, Style, TaffyTree};
 use vello::{
-    kurbo::{Point, Size},
     peniko::Color,
     util::{RenderContext, RenderSurface},
     AaConfig, Renderer, RendererOptions, Scene,
@@ -31,13 +30,34 @@ pub struct RenderState<'s> {
 pub struct Volt {
     pub(crate) renderers: Vec<Option<Renderer>>,
     pub root: Div,
+    pub tree: TaffyTree,
 }
 
 impl Volt {
     pub fn new() -> Self {
+        let mut tree = TaffyTree::new();
+        let root_div = Div::default();
+        let root_div_node = tree
+            .new_leaf(Style {
+                size: Size::from_percent(100.0, 100.0),
+                ..Default::default()
+            })
+            .unwrap();
+        let root = tree
+            .new_with_children(
+                Style {
+                    size: Size::from_lengths(500.0, 400.0),
+                    ..Default::default()
+                },
+                &[root_div_node],
+            )
+            .unwrap();
+        tree.compute_layout(root, Size::MAX_CONTENT).unwrap();
+        println!("{:?}", tree.layout(root_div_node).unwrap().size.width);
         Volt {
             renderers: vec![],
             root: Div::default(),
+            tree,
         }
     }
     pub fn render(&mut self, event_loop: EventLoop<()>, mut render_cx: RenderContext) {
@@ -81,7 +101,6 @@ impl Volt {
                             };
                             scene.reset();
                             self.root.render(&mut scene);
-                            
 
                             vello::block_on_wgpu(
                                 &device_handle.device,

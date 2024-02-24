@@ -9,6 +9,7 @@ use vello::{
     util::{RenderContext, RenderSurface},
     AaConfig, Renderer, RendererOptions, Scene,
 };
+use window::WindowOptions;
 use winit::{
     dpi::LogicalSize,
     event::*,
@@ -27,16 +28,6 @@ pub struct Volt {
 }
 
 impl Volt {
-    pub fn create_window(event_loop: &winit::event_loop::EventLoopWindowTarget<()>) -> Arc<Window> {
-        Arc::new(
-            WindowBuilder::new()
-                .with_inner_size(LogicalSize::new(1044, 800))
-                .with_resizable(true)
-                .with_title("Volt test")
-                .build(event_loop)
-                .unwrap(),
-        )
-    }
     pub fn render(event_loop: EventLoop<()>, mut render_cx: RenderContext) {
         let mut renderers: Vec<Option<Renderer>> = vec![];
         let mut render_state = None::<RenderState>;
@@ -111,7 +102,7 @@ impl Volt {
                     let Option::None = render_state else { return };
                     let window = cached_window
                         .take()
-                        .unwrap_or_else(|| Self::create_window(event_loop));
+                        .unwrap_or_else(|| window::new(event_loop, WindowOptions::default()));
                     let size = window.inner_size();
                     let surface_future =
                         render_cx.create_surface(window.clone(), size.width, size.height);

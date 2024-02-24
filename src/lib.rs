@@ -84,9 +84,9 @@ impl Volt {
                                 children: vec![],
                                 size: Size::new(40.0, 40.0),
                                 position: Point::new(40.0, 40.0),
-                                background: color::Color::Hex("#f38ba8"),
+                                background: color::Color::Hex(0xf38ba8),
                                 border_width: 0.0,
-                                border_color: color::Color::Hex("#f38ba8"),
+                                border_color: color::Color::Hex(0xf38ba8),
                                 border_offset: BorderOffset::Center,
                                 radius: 20.0,
                             }));
@@ -94,9 +94,9 @@ impl Volt {
                                 children: vec![],
                                 size: Size::new(40.0, 40.0),
                                 position: Point::new(80.0, 40.0),
-                                background: color::Color::Hex("#f38ba8"),
+                                background: color::Color::Hex(0xf38ba8),
                                 border_width: 0.0,
-                                border_color: color::Color::Hex("#f38ba8"),
+                                border_color: color::Color::Hex(0xf38ba8),
                                 border_offset: BorderOffset::Center,
                                 radius: 20.0,
                             }));
@@ -104,22 +104,13 @@ impl Volt {
                                 children: vec![],
                                 size: Size::new(40.0, 40.0),
                                 position: Point::new(40.0, 80.0),
-                                background: color::Color::Hex("#f38ba8"),
+                                background: color::Color::Hex(0xf38ba8),
                                 border_width: 0.0,
-                                border_color: color::Color::Hex("#f38ba8"),
+                                border_color: color::Color::Hex(0xf38ba8),
                                 border_offset: BorderOffset::Center,
                                 radius: 20.0,
                             }));
-                            self.root.children.push(Box::new(Div {
-                                children: vec![],
-                                size: Size::new(40.0, 40.0),
-                                position: Point::new(80.0, 80.0),
-                                background: color::Color::Hex("#f38ba8"),
-                                border_width: 0.0,
-                                border_color: color::Color::Hex("#f38ba8"),
-                                border_offset: BorderOffset::Center,
-                                radius: 20.0,
-                            }));
+
                             vello::block_on_wgpu(
                                 &device_handle.device,
                                 self.renderers[render_state.surface.dev_id]

@@ -72,9 +72,9 @@ impl Default for Div {
             children: vec![],
             size: Size::new(200.0, 200.0),
             position: Point::new(20.0, 20.0),
-            background: Color::Hex("#313243"),
+            background: Color::Hex(0x313244),
             border_width: 2.0,
-            border_color: Color::Hex("#f38ba8"),
+            border_color: Color::Hex(0xf38ba8),
             border_offset: BorderOffset::Center,
             radius: 20.0,
         }

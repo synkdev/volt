@@ -42,7 +42,7 @@ impl Default for WindowOptions {
             window_icon: None,
             active: true,
             decorations: false,
-            background: Color::Hex("#1e1d2d"),
+            background: Color::Hex(0x1818125),
         }
     }
 }

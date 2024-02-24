@@ -1,6 +1,7 @@
 pub mod color;
 pub mod div;
 pub mod element;
+pub mod layout;
 pub mod styles;
 pub mod window;
 

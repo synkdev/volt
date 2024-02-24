@@ -143,7 +143,6 @@ impl Volt {
                         self.renderers.resize_with(render_cx.devices.len(), || None);
                         let id = render_state.surface.dev_id;
                         self.renderers[id].get_or_insert_with(|| {
-                            eprintln!("Creating renderer {id}");
                             Renderer::new(
                                 &render_cx.devices[id].device,
                                 RendererOptions {
@@ -164,10 +163,8 @@ impl Volt {
             .expect("Couldnt run event loop");
     }
     pub fn run() -> Result<()> {
-        let event_loop = EventLoop::new()?;
-        let render_cx = RenderContext::new().unwrap();
         let mut volt = Volt::new();
-        volt.render(event_loop, render_cx);
+        volt.render(EventLoop::new()?, RenderContext::new().unwrap());
         Ok(())
     }
 }

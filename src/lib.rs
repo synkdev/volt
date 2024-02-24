@@ -1,3 +1,6 @@
+pub mod color;
+pub mod window;
+
 use anyhow::Result;
 use std::{num::NonZeroUsize, sync::Arc};
 use vello::{

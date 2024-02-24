@@ -1,3 +1,4 @@
+use taffy::NodeId;
 use vello::kurbo::{Affine, Point, RoundedRect, Size, Stroke};
 
 use crate::{color::Color, element::Element, styles::BorderOffset};
@@ -11,6 +12,7 @@ pub struct Div {
     pub border_color: Color,
     pub border_offset: BorderOffset,
     pub radius: f64,
+    pub taffy_id: NodeId,
 }
 
 impl Element for Div {
@@ -64,6 +66,9 @@ impl Element for Div {
             child.render(scene);
         }
     }
+    fn taffy_id(&self) -> NodeId {
+        self.taffy_id
+    }
 }
 
 impl Default for Div {
@@ -77,6 +82,7 @@ impl Default for Div {
             border_color: Color::Hex(0xf38ba8),
             border_offset: BorderOffset::Center,
             radius: 20.0,
+            taffy_id: NodeId::new(0),
         }
     }
 }

@@ -1,5 +1,5 @@
 pub enum BorderOffset {
-    Inset,
-    Outset,
-    Center,
+	Inset,
+	Outset,
+	Center,
 }

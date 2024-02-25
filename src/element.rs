@@ -6,4 +6,5 @@ pub trait Element {
 	fn taffy_id(&self) -> NodeId;
 	fn on_click(&mut self);
 	fn on_right_click(&mut self);
+	fn dirty() -> bool;
 }

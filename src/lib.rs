@@ -53,7 +53,6 @@ impl Volt {
             )
             .unwrap();
         tree.compute_layout(root, Size::MAX_CONTENT).unwrap();
-        println!("{:?}", tree.layout(root_div_node).unwrap().size.width);
         Volt {
             renderers: vec![],
             root: Div::default(),

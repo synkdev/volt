@@ -105,7 +105,7 @@ impl Volt {
                                 &device_handle.device,
                                 self.renderers[render_state.surface.dev_id]
                                     .as_mut()
-                                    .unwrap()
+                                    .expect("Couldnt fetch renderer")
                                     .render_to_surface_async(
                                         &device_handle.device,
                                         &device_handle.queue,

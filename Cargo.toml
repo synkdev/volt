@@ -6,6 +6,7 @@ edition = "2021"
 [features]
 wayland = []
 x11 = []
+windows = []
 
 [dependencies]
 anyhow = "1.0.80"

@@ -43,7 +43,10 @@ impl Default for WindowOptions {
 			blur: false,
 			window_icon: None,
 			active: true,
+			#[cfg(not(feature = "windows"))]
 			decorations: false,
+			#[cfg(feature = "windows")]
+			decorations: true,
 			background: Color::Hex(0x1818125),
 		}
 	}

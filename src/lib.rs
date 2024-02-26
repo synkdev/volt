@@ -28,7 +28,6 @@ pub struct Volt<'s> {
 	pub(crate) renderer: Renderer,
 	pub(crate) surface: RenderSurface<'s>,
 	pub(crate) event_loop: EventLoop<()>,
-	pub(crate) window: Arc<Window>,
 	pub(crate) render_cx: RenderContext,
 	pub(crate) scene: Scene,
 
@@ -84,7 +83,6 @@ impl<'s> Volt<'s> {
 			render_cx,
 			scene,
 			surface,
-			window,
 			event_loop,
 			elements: vec![],
 		}

@@ -38,7 +38,7 @@ pub struct Volt<'s> {
 
 impl<'s> Volt<'s> {
 	pub async fn new() -> Self {
-		let mut tree = TaffyTree::new();
+		let tree = TaffyTree::new();
 		// let root_div = Div::default();
 		// let root_div_node = tree
 		// 	.new_leaf(Style {

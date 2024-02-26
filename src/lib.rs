@@ -23,11 +23,6 @@ use winit::{
 	window::Window,
 };
 
-pub struct RenderState<'s> {
-	surface: RenderSurface<'s>,
-	window: Arc<Window>,
-}
-
 pub struct Volt<'s> {
 	/// Vello renderer stuff
 	pub(crate) renderer: Renderer,
@@ -80,7 +75,7 @@ impl<'s> Volt<'s> {
 			},
 		)
 		.expect("Couldn't create Vello Renderer");
-		let mut scene = Scene::new();
+		let scene = Scene::new();
 
 		Volt {
 			renderer,
@@ -98,7 +93,7 @@ impl<'s> Volt<'s> {
 	pub fn render(mut self) {
 		self.event_loop
 			.run(move |event, event_loop| match event {
-				Event::WindowEvent { ref event, window_id } => match event {
+				Event::WindowEvent { ref event, .. } => match event {
 					WindowEvent::CloseRequested => event_loop.exit(),
 					WindowEvent::Resized(size) => {
 						self.render_cx

@@ -29,7 +29,8 @@ pub struct RenderState<'s> {
 }
 
 pub struct Volt {
-	pub(crate) renderers: Vec<Option<Renderer>>,
+	pub(crate) renderer: Renderer,
+	pub elements: Vec<Box<dyn Element>>,
 	pub root: Div,
 	pub tree: TaffyTree,
 }

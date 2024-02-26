@@ -28,12 +28,13 @@ pub struct RenderState<'s> {
 	window: Arc<Window>,
 }
 
-pub struct Volt {
+pub struct Volt<'s> {
 	/// Vello renderer stuff
 	pub(crate) renderer: Renderer,
-	pub(crate) render_state: Option<RenderState<'_>>,
-	pub(crate) cached_window: Option<Arc<Window>>,
+	pub(crate) surface: RenderSurface<'s>,
+	pub(crate) window: Arc<Window>,
 	pub(crate) render_context: RenderContext,
+	pub(crate) scene: Scene,
 
 	pub elements: Vec<Box<dyn Element>>,
 	pub root: Div,
@@ -68,6 +69,9 @@ impl Volt {
 			renderers: vec![],
 			root: Div::default(),
 			tree,
+			render_context,
+			render_state,
+			scene,
 		}
 	}
 

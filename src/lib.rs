@@ -33,7 +33,7 @@ pub struct Volt<'s> {
 	pub(crate) renderer: Renderer,
 	pub(crate) surface: RenderSurface<'s>,
 	pub(crate) window: Arc<Window>,
-	pub(crate) render_context: RenderContext,
+	pub(crate) render_cx: RenderContext,
 	pub(crate) scene: Scene,
 
 	pub elements: Vec<Box<dyn Element>>,
@@ -42,7 +42,7 @@ pub struct Volt<'s> {
 }
 
 impl Volt {
-	pub fn new() -> Self {
+	pub async fn new() -> Self {
 		let mut tree = TaffyTree::new();
 		// let root_div = Div::default();
 		// let root_div_node = tree
@@ -61,17 +61,25 @@ impl Volt {
 		// 	)
 		// 	.unwrap();
 		// tree.compute_layout(root, Size::MAX_CONTENT).unwrap();
-		let mut render_state = None::<RenderState>;
-		let mut cached_window = None;
+		let render_cx = RenderContext::new().expect("Couldn't create a Vello RenderContext");
+		let event_loop = EventLoop::new().expect("Couldn't create event loop");
+		let window = window::new(&event_loop, WindowOptions::default());
+		let surface = render_cx
+			.create_surface(window.clone(), size.width, size.height)
+			.await
+			.expect("Error creating surface");
 		let mut scene = Scene::new();
 
 		Volt {
-			renderers: vec![],
+			renderer: vec![],
 			root: Div::default(),
 			tree,
-			render_context,
-			render_state,
+			render_cx,
 			scene,
+			renderer: todo!(),
+			surface: todo!(),
+			window: todo!(),
+			elements: todo!(),
 		}
 	}
 

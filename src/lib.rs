@@ -5,7 +5,7 @@ pub mod layout;
 pub mod styles;
 pub mod window;
 
-use std::{num::NonZeroUsize, sync::Arc};
+use std::num::NonZeroUsize;
 
 use anyhow::Result;
 use div::Div;
@@ -20,7 +20,6 @@ use window::WindowOptions;
 use winit::{
 	event::*,
 	event_loop::{ControlFlow, EventLoop},
-	window::Window,
 };
 
 pub struct Volt<'s> {

@@ -29,7 +29,12 @@ pub struct RenderState<'s> {
 }
 
 pub struct Volt {
+	/// Vello renderer stuff
 	pub(crate) renderer: Renderer,
+	pub(crate) render_state: Option<RenderState<'_>>,
+	pub(crate) cached_window: Option<Arc<Window>>,
+	pub(crate) render_context: RenderContext,
+
 	pub elements: Vec<Box<dyn Element>>,
 	pub root: Div,
 	pub tree: TaffyTree,
@@ -38,23 +43,27 @@ pub struct Volt {
 impl Volt {
 	pub fn new() -> Self {
 		let mut tree = TaffyTree::new();
-		let root_div = Div::default();
-		let root_div_node = tree
-			.new_leaf(Style {
-				size: Size::from_percent(100.0, 100.0),
-				..Default::default()
-			})
-			.unwrap();
-		let root = tree
-			.new_with_children(
-				Style {
-					size: Size::from_lengths(500.0, 400.0),
-					..Default::default()
-				},
-				&[root_div_node],
-			)
-			.unwrap();
-		tree.compute_layout(root, Size::MAX_CONTENT).unwrap();
+		// let root_div = Div::default();
+		// let root_div_node = tree
+		// 	.new_leaf(Style {
+		// 		size: Size::from_percent(100.0, 100.0),
+		// 		..Default::default()
+		// 	})
+		// 	.unwrap();
+		// let root = tree
+		// 	.new_with_children(
+		// 		Style {
+		// 			size: Size::from_lengths(500.0, 400.0),
+		// 			..Default::default()
+		// 		},
+		// 		&[root_div_node],
+		// 	)
+		// 	.unwrap();
+		// tree.compute_layout(root, Size::MAX_CONTENT).unwrap();
+		let mut render_state = None::<RenderState>;
+		let mut cached_window = None;
+		let mut scene = Scene::new();
+
 		Volt {
 			renderers: vec![],
 			root: Div::default(),

@@ -1,17 +1,7 @@
 use taffy::NodeId;
-use vello::kurbo::{
-	Affine,
-	Point,
-	RoundedRect,
-	Size,
-	Stroke,
-};
+use vello::kurbo::{Affine, Point, RoundedRect, Size, Stroke};
 
-use crate::{
-	color::Color,
-	element::Element,
-	styles::BorderOffset,
-};
+use crate::{color::Color, element::Element, styles::BorderOffset};
 
 pub struct Div {
 	pub children: Vec<Box<dyn Element>>,
@@ -35,33 +25,27 @@ impl Element for Div {
 			self.radius,
 		);
 		let border_stroke = match self.border_offset {
-			BorderOffset::Outset => {
-				RoundedRect::new(
-					self.position.x + self.border_width,
-					self.position.y + self.border_width,
-					self.position.x + self.size.width + self.border_width,
-					self.position.y + self.size.height + self.border_width,
-					self.radius,
-				)
-			}
-			BorderOffset::Inset => {
-				RoundedRect::new(
-					self.position.x - self.border_width,
-					self.position.y - self.border_width,
-					self.position.x + self.size.width - self.border_width,
-					self.position.y + self.size.height - self.border_width,
-					self.radius,
-				)
-			}
-			BorderOffset::Center => {
-				RoundedRect::new(
-					self.position.x + (self.border_width / 2.0),
-					self.position.y + (self.border_width / 2.0),
-					self.position.x + self.size.width + (self.border_width / 2.0),
-					self.position.y + self.size.height + (self.border_width / 2.0),
-					self.radius,
-				)
-			}
+			BorderOffset::Outset => RoundedRect::new(
+				self.position.x + self.border_width,
+				self.position.y + self.border_width,
+				self.position.x + self.size.width + self.border_width,
+				self.position.y + self.size.height + self.border_width,
+				self.radius,
+			),
+			BorderOffset::Inset => RoundedRect::new(
+				self.position.x - self.border_width,
+				self.position.y - self.border_width,
+				self.position.x + self.size.width - self.border_width,
+				self.position.y + self.size.height - self.border_width,
+				self.radius,
+			),
+			BorderOffset::Center => RoundedRect::new(
+				self.position.x + (self.border_width / 2.0),
+				self.position.y + (self.border_width / 2.0),
+				self.position.x + self.size.width + (self.border_width / 2.0),
+				self.position.y + self.size.height + (self.border_width / 2.0),
+				self.radius,
+			),
 		};
 		let stroke = Stroke::new(self.border_width);
 		scene.fill(

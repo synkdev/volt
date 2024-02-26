@@ -1,16 +1,9 @@
 use std::sync::Arc;
 
 use winit::{
-	dpi::{
-		LogicalPosition,
-		LogicalSize,
-	},
+	dpi::{LogicalPosition, LogicalSize},
 	event_loop::EventLoopWindowTarget,
-	window::{
-		Icon,
-		Window,
-		WindowBuilder,
-	},
+	window::{Icon, Window, WindowBuilder},
 };
 
 use crate::color::Color;

@@ -10,11 +10,11 @@ use std::{num::NonZeroUsize, sync::Arc};
 use anyhow::Result;
 use div::Div;
 use element::Element;
-use taffy::{style_helpers::TaffyMaxContent, Size, Style, TaffyTree};
+use taffy::{style_helpers::TaffyMaxContent, NodeId, Size, Style, TaffyTree};
 use vello::{
 	peniko::Color,
 	util::{RenderContext, RenderSurface},
-	AaConfig, Renderer, RendererOptions, Scene,
+	AaConfig, AaSupport, Renderer, RendererOptions, Scene,
 };
 use window::WindowOptions;
 use winit::{
@@ -37,7 +37,7 @@ pub struct Volt<'s> {
 	pub(crate) scene: Scene,
 
 	pub elements: Vec<Box<dyn Element>>,
-	pub root: Div,
+	pub root: NodeId,
 	pub tree: TaffyTree,
 }
 
@@ -68,18 +68,26 @@ impl Volt {
 			.create_surface(window.clone(), size.width, size.height)
 			.await
 			.expect("Error creating surface");
+		let renderer = Renderer::new(
+			&render_cx.devices[surface.dev_id],
+			&RendererOptions {
+				surface_format: Some(surface.config.format),
+				use_cpu: false,
+				antialiasing_support: AaSupport::all(),
+				num_init_threads: NonZeroUsize::new(1),
+			},
+		);
 		let mut scene = Scene::new();
 
 		Volt {
-			renderer: vec![],
-			root: Div::default(),
+			renderer,
+			root: NodeId::new(0),
 			tree,
 			render_cx,
 			scene,
-			renderer: todo!(),
-			surface: todo!(),
-			window: todo!(),
-			elements: todo!(),
+			surface,
+			window,
+			elements: vec![],
 		}
 	}
 

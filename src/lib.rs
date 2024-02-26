@@ -32,6 +32,7 @@ pub struct Volt<'s> {
 	/// Vello renderer stuff
 	pub(crate) renderer: Renderer,
 	pub(crate) surface: RenderSurface<'s>,
+	pub(crate) event_loop: EventLoop<()>,
 	pub(crate) window: Arc<Window>,
 	pub(crate) render_cx: RenderContext,
 	pub(crate) scene: Scene,
@@ -41,7 +42,7 @@ pub struct Volt<'s> {
 	pub tree: TaffyTree,
 }
 
-impl Volt {
+impl<'s> Volt<'s> {
 	pub async fn new() -> Self {
 		let mut tree = TaffyTree::new();
 		// let root_div = Div::default();
@@ -61,7 +62,7 @@ impl Volt {
 		// 	)
 		// 	.unwrap();
 		// tree.compute_layout(root, Size::MAX_CONTENT).unwrap();
-		let render_cx = RenderContext::new().expect("Couldn't create a Vello RenderContext");
+		let mut render_cx = RenderContext::new().expect("Couldn't create a Vello RenderContext");
 		let event_loop = EventLoop::new().expect("Couldn't create event loop");
 		let window = window::new(&event_loop, WindowOptions::default());
 		let size = window.inner_size();
@@ -89,99 +90,59 @@ impl Volt {
 			scene,
 			surface,
 			window,
+			event_loop,
 			elements: vec![],
 		}
 	}
 
-	pub fn render(&mut self, event_loop: EventLoop<()>, mut render_cx: RenderContext) {
-		let mut render_state = None::<RenderState>;
-		let mut cached_window = None;
-		let mut scene = Scene::new();
-		event_loop
+	pub fn render(mut self) {
+		self.event_loop
 			.run(move |event, event_loop| match event {
-				Event::WindowEvent { ref event, window_id } => {
-					let Some(render_state) = &mut render_state else {
-						return;
-					};
-					if render_state.window.id() != window_id {
-						return;
+				Event::WindowEvent { ref event, window_id } => match event {
+					WindowEvent::CloseRequested => event_loop.exit(),
+					WindowEvent::Resized(size) => {
+						self.render_cx
+							.resize_surface(&mut self.surface, size.width, size.height)
 					}
-					match event {
-						WindowEvent::CloseRequested => event_loop.exit(),
-						WindowEvent::Resized(size) => {
-							render_cx.resize_surface(&mut render_state.surface, size.width, size.height)
-						}
-						WindowEvent::RedrawRequested => {
-							let width = render_state.surface.config.width;
-							let height = render_state.surface.config.height;
-							let device_handle = &render_cx.devices[render_state.surface.dev_id];
-							render_state.window.set_title("Volt Example");
-							let surface_texture = render_state
-								.surface
-								.surface
-								.get_current_texture()
-								.expect("failed to get surface texture");
-							let render_params = vello::RenderParams {
-								base_color: Color::BLACK,
-								width,
-								height,
-								antialiasing_method: AaConfig::Msaa16,
-							};
-							scene.reset();
-							self.root.render(&mut scene);
+					WindowEvent::RedrawRequested => {
+						let width = self.surface.config.width;
+						let height = self.surface.config.height;
+						let device_handle = &self.render_cx.devices[self.surface.dev_id];
+						let surface_texture = self
+							.surface
+							.surface
+							.get_current_texture()
+							.expect("failed to get surface texture");
+						let render_params = vello::RenderParams {
+							base_color: Color::BLACK,
+							width,
+							height,
+							antialiasing_method: AaConfig::Msaa16,
+						};
+						self.scene.reset();
+						// self.root.render(&mut scene);
+						Div::default().render(&mut self.scene);
 
-							vello::block_on_wgpu(
+						vello::block_on_wgpu(
+							&device_handle.device,
+							self.renderer.render_to_surface_async(
 								&device_handle.device,
-								self.renderers[render_state.surface.dev_id]
-									.as_mut()
-									.expect("Couldnt fetch renderer")
-									.render_to_surface_async(
-										&device_handle.device,
-										&device_handle.queue,
-										&scene,
-										&surface_texture,
-										&render_params,
-									),
-							)
-							.expect("failed to render to surface");
-							surface_texture.present();
-							device_handle.device.poll(wgpu::Maintain::Poll);
-						}
-						_ => {}
+								&device_handle.queue,
+								&self.scene,
+								&surface_texture,
+								&render_params,
+							),
+						)
+						.expect("failed to render to surface");
+						surface_texture.present();
+						device_handle.device.poll(wgpu::Maintain::Poll);
 					}
-				}
+					_ => {}
+				},
 				Event::Suspended => {
-					if let Some(render_state) = render_state.take() {
-						cached_window = Some(render_state.window);
-					}
 					event_loop.set_control_flow(ControlFlow::Wait);
 				}
 				Event::Resumed => {
-					let Option::None = render_state else { return };
-					let window = cached_window
-						.take()
-						.unwrap_or_else(|| window::new(event_loop, WindowOptions::default()));
-					let size = window.inner_size();
-					let surface_future = render_cx.create_surface(window.clone(), size.width, size.height);
-					let surface = pollster::block_on(surface_future).expect("Error creating surface");
-					render_state = {
-						let render_state = RenderState { window, surface };
-						self.renderers.resize_with(render_cx.devices.len(), || None);
-						let id = render_state.surface.dev_id;
-						self.renderers[id].get_or_insert_with(|| {
-							Renderer::new(
-								&render_cx.devices[id].device,
-								RendererOptions {
-									surface_format: Some(render_state.surface.format),
-									use_cpu: false,
-									antialiasing_support: vello::AaSupport::all(),
-									num_init_threads: NonZeroUsize::new(1),
-								},
-							)
-							.expect("Could create renderer")
-						});
-						Some(render_state)
-					};
 					event_loop.set_control_flow(ControlFlow::Poll);
 				}
 				_ => {}
@@ -190,8 +151,7 @@ impl Volt {
 	}
 
 	pub async fn run() -> Result<()> {
-		let mut volt = Volt::new();
-		volt.await.render(EventLoop::new()?, RenderContext::new().unwrap());
+		Volt::new().await.render();
 		Ok(())
 	}
 }

@@ -10,7 +10,7 @@ use std::num::NonZeroUsize;
 use anyhow::Result;
 use div::Div;
 use element::Element;
-use taffy::{style_helpers::TaffyMaxContent, NodeId, Size, Style, TaffyTree};
+use taffy::{NodeId, TaffyTree};
 use vello::{
 	peniko::Color,
 	util::{RenderContext, RenderSurface},

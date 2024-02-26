@@ -1,5 +1,6 @@
 use taffy::prelude::*;
 
+#[allow(unused)]
 fn layout() {
 	let mut tree: TaffyTree<()> = TaffyTree::new();
 

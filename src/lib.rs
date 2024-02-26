@@ -64,19 +64,21 @@ impl Volt {
 		let render_cx = RenderContext::new().expect("Couldn't create a Vello RenderContext");
 		let event_loop = EventLoop::new().expect("Couldn't create event loop");
 		let window = window::new(&event_loop, WindowOptions::default());
+		let size = window.inner_size();
 		let surface = render_cx
 			.create_surface(window.clone(), size.width, size.height)
 			.await
 			.expect("Error creating surface");
 		let renderer = Renderer::new(
-			&render_cx.devices[surface.dev_id],
-			&RendererOptions {
+			&render_cx.devices[surface.dev_id].device,
+			RendererOptions {
 				surface_format: Some(surface.config.format),
 				use_cpu: false,
 				antialiasing_support: AaSupport::all(),
 				num_init_threads: NonZeroUsize::new(1),
 			},
-		);
+		)
+		.expect("Couldn't create Vello Renderer");
 		let mut scene = Scene::new();
 
 		Volt {
@@ -187,9 +189,9 @@ impl Volt {
 			.expect("Couldnt run event loop");
 	}
 
-	pub fn run() -> Result<()> {
+	pub async fn run() -> Result<()> {
 		let mut volt = Volt::new();
-		volt.render(EventLoop::new()?, RenderContext::new().unwrap());
+		volt.await.render(EventLoop::new()?, RenderContext::new().unwrap());
 		Ok(())
 	}
 }

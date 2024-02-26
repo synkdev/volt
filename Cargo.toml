@@ -14,3 +14,4 @@ wgpu = "0.19.1"
 winit = "0.29.10"
 vello = { git = "https://github.com/linebender/vello" }
 taffy = "0.4.0"
+tokio = { version = "1.36.0", features = ["full"] }

@@ -1,5 +1,6 @@
 use volt::Volt;
 
-fn main() {
-    Volt::run().expect("Couldnt start");
+#[tokio::main]
+async fn main() {
+    Volt::run().await.expect("Couldnt start");
 }

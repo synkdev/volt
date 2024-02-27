@@ -3,8 +3,8 @@ pub mod context;
 pub mod div;
 pub mod element;
 pub mod layout;
-pub mod styles;
 pub mod node;
+pub mod styles;
 pub mod window;
 
 use std::num::NonZeroUsize;
@@ -13,6 +13,7 @@ use anyhow::Result;
 use context::Context;
 use div::Div;
 use element::Element;
+use node::Node;
 use taffy::{NodeId, TaffyTree};
 use vello::{
 	peniko::Color,
@@ -32,7 +33,7 @@ pub struct Volt<'s> {
 	pub(crate) event_loop: EventLoop<()>,
 	pub(crate) render_cx: RenderContext,
 	pub(crate) scene: Scene,
-	pub cx: Context,
+	pub root: Node,
 }
 
 impl<'s> Volt<'s> {
@@ -82,7 +83,6 @@ impl<'s> Volt<'s> {
 			scene,
 			surface,
 			event_loop,
-			cx,
 		}
 	}
 
@@ -112,7 +112,7 @@ impl<'s> Volt<'s> {
 						};
 						self.scene.reset();
 						// self.root.render(&mut scene);
-						Div::default().render(&mut self.cx, &mut self.scene);
+						Div::default().render(&mut self.scene);
 
 						vello::block_on_wgpu(
 							&device_handle.device,

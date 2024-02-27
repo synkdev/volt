@@ -1,4 +1,5 @@
 pub mod color;
+pub mod context;
 pub mod div;
 pub mod element;
 pub mod layout;
@@ -30,10 +31,6 @@ pub struct Volt<'s> {
 	pub(crate) event_loop: EventLoop<()>,
 	pub(crate) render_cx: RenderContext,
 	pub(crate) scene: Scene,
-
-	pub elements: Vec<Box<dyn Element>>,
-	pub root: NodeId,
-	pub tree: TaffyTree,
 }
 
 impl<'s> Volt<'s> {
@@ -78,13 +75,10 @@ impl<'s> Volt<'s> {
 
 		Volt {
 			renderer,
-			root: NodeId::new(0),
-			tree,
 			render_cx,
 			scene,
 			surface,
 			event_loop,
-			elements: vec![],
 		}
 	}
 

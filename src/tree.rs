@@ -7,7 +7,3 @@ pub struct Node {
 	id: usize,
 	children: Option<Vec<Node>>,
 }
-
-pub struct Tree {
-	pub nodes: Vec<Node>,
-}

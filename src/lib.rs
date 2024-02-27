@@ -3,6 +3,7 @@ pub mod div;
 pub mod element;
 pub mod layout;
 pub mod styles;
+pub mod tree;
 pub mod window;
 
 use std::num::NonZeroUsize;

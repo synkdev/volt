@@ -2,8 +2,7 @@ use std::collections::HashMap;
 
 use crate::element::Element;
 
-pub struct Node<Element: Element> {
-	element: Element,
+pub struct Node {
+	element: Box<dyn Element>,
 	id: usize,
-	children: Option<Vec<Node<Element>>>,
 }

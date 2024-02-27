@@ -75,7 +75,7 @@ impl<'s> Volt<'s> {
 		)
 		.expect("Couldn't create Vello Renderer");
 		let scene = Scene::new();
-		let cx = Context::new();
+		let root = Node::new(Div::default(), 0);
 
 		Volt {
 			renderer,
@@ -83,6 +83,7 @@ impl<'s> Volt<'s> {
 			scene,
 			surface,
 			event_loop,
+			root,
 		}
 	}
 

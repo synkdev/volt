@@ -10,6 +10,7 @@ pub mod window;
 use std::num::NonZeroUsize;
 
 use anyhow::Result;
+use context::Context;
 use div::Div;
 use element::Element;
 use taffy::{NodeId, TaffyTree};
@@ -31,6 +32,7 @@ pub struct Volt<'s> {
 	pub(crate) event_loop: EventLoop<()>,
 	pub(crate) render_cx: RenderContext,
 	pub(crate) scene: Scene,
+	pub cx: Context,
 }
 
 impl<'s> Volt<'s> {
@@ -72,6 +74,7 @@ impl<'s> Volt<'s> {
 		)
 		.expect("Couldn't create Vello Renderer");
 		let scene = Scene::new();
+		let cx = Context::new();
 
 		Volt {
 			renderer,
@@ -79,6 +82,7 @@ impl<'s> Volt<'s> {
 			scene,
 			surface,
 			event_loop,
+			cx,
 		}
 	}
 
@@ -108,7 +112,7 @@ impl<'s> Volt<'s> {
 						};
 						self.scene.reset();
 						// self.root.render(&mut scene);
-						Div::default().render(&mut self.scene);
+						Div::default().render(&mut self.scene, cx);
 
 						vello::block_on_wgpu(
 							&device_handle.device,

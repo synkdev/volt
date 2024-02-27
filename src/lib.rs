@@ -112,7 +112,7 @@ impl<'s> Volt<'s> {
 						};
 						self.scene.reset();
 						// self.root.render(&mut scene);
-						Div::default().render(&mut self.scene, cx);
+						Div::default().render(&mut self.cx, &mut self.scene);
 
 						vello::block_on_wgpu(
 							&device_handle.device,

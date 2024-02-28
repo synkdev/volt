@@ -14,7 +14,7 @@ use context::Context;
 use div::Div;
 use element::Element;
 use node::Node;
-use taffy::{NodeId, Size, TaffyTree};
+use taffy::prelude::*;
 use vello::{
 	peniko::Color,
 	util::{RenderContext, RenderSurface},
@@ -38,7 +38,7 @@ pub struct Volt<'s> {
 
 impl<'s> Volt<'s> {
 	pub async fn new() -> Self {
-		let tree = TaffyTree::new();
+		let mut tree = TaffyTree::<()>::new();
 		let root_div_node = tree
 			.new_leaf(Style {
 				size: Size::from_percent(100.0, 100.0),

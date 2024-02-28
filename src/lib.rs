@@ -38,7 +38,6 @@ pub struct Volt<'s> {
 
 impl<'s> Volt<'s> {
 	pub async fn new() -> Self {
-		let tree = TaffyTree::new();
 		// let root_div = Div::default();
 		// let root_div_node = tree
 		// 	.new_leaf(Style {
@@ -112,8 +111,7 @@ impl<'s> Volt<'s> {
 							antialiasing_method: AaConfig::Msaa16,
 						};
 						self.scene.reset();
-						// self.root.render(&mut scene);
-						Div::default().render(&mut self.scene);
+						self.root.element.render(&mut self.scene);
 
 						vello::block_on_wgpu(
 							&device_handle.device,

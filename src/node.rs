@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use crate::element::Element;
 
 pub struct Node {
-	element: Box<dyn Element>,
-	id: usize,
+	pub element: Box<dyn Element>,
+	pub id: usize,
 }
 
 impl Node {

@@ -38,23 +38,22 @@ pub struct Volt<'s> {
 
 impl<'s> Volt<'s> {
 	pub async fn new() -> Self {
-		// let root_div = Div::default();
-		// let root_div_node = tree
-		// 	.new_leaf(Style {
-		// 		size: Size::from_percent(100.0, 100.0),
-		// 		..Default::default()
-		// 	})
-		// 	.unwrap();
-		// let root = tree
-		// 	.new_with_children(
-		// 		Style {
-		// 			size: Size::from_lengths(500.0, 400.0),
-		// 			..Default::default()
-		// 		},
-		// 		&[root_div_node],
-		// 	)
-		// 	.unwrap();
-		// tree.compute_layout(root, Size::MAX_CONTENT).unwrap();
+		let root_div_node = tree
+			.new_leaf(Style {
+				size: Size::from_percent(100.0, 100.0),
+				..Default::default()
+			})
+			.unwrap();
+		let root = tree
+			.new_with_children(
+				Style {
+					size: Size::from_lengths(500.0, 400.0),
+					..Default::default()
+				},
+				&[root_div_node],
+			)
+			.unwrap();
+		tree.compute_layout(root, Size::MAX_CONTENT).unwrap();
 		let mut render_cx = RenderContext::new().expect("Couldn't create a Vello RenderContext");
 		let event_loop = EventLoop::new().expect("Couldn't create event loop");
 		let window = window::new(&event_loop, WindowOptions::default());

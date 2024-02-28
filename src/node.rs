@@ -16,7 +16,4 @@ impl Node {
 			id,
 		}
 	}
-	pub fn add(&mut self, element: impl Element) {
-		self.element.add(element);
-	}
 }

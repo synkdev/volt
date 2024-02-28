@@ -72,6 +72,12 @@ impl Element for Div {
 	}
 }
 
+impl Div {
+	pub fn add(&mut self, element: impl Element) {
+		self.children.push(Box::new(element));
+	}
+}
+
 impl Default for Div {
 	fn default() -> Self {
 		Div {

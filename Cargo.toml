@@ -1,32 +1,18 @@
-workspace = { members = ["crates/photon"] }
-
 [package]
 name = "volt"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 
 [features]
 wayland = []
+x11 = []
+windows = []
 
 [dependencies]
-anyhow = "1.0.79"
-downcast-rs = "1.2.0"
-gl-rs = { package = "gl", version = "0.14.0" }
-glutin = "0.31.2"
-glutin-winit = "0.4.2"
-image = "0.24.8"
-raw-window-handle = "0.5.0"
-skia = { package = "skia-safe", version = "0.70.0", features = [
-	"gl",
-	"wayland",
-	"shaper",
-	"textlayout",
-	"svg",
-] }
-tokio = { version = "1.35.1", features = ["full"] }
+anyhow = "1.0.80"
+pollster = "0.3.0"
+wgpu = "0.19.1"
 winit = "0.29.10"
-photon = { path = "crates/photon" }
-
-[[example]]
-name = "hello_world"
-required-features = ["wayland"]
+vello = { git = "https://github.com/linebender/vello" }
+taffy = "0.4.0"
+tokio = { version = "1.36.0", features = ["full"] }

@@ -1,10 +1,6 @@
-use volt::{
-    ui::{elements::button::Button, Color, Element},
-    Volt,
-};
+use volt::Volt;
 
-fn main() {
-    Volt::new().with_id("hello_world").run(|cx| {
-        cx.root.add(Button::new().into());
-    });
+#[tokio::main]
+async fn main() {
+	Volt::run().await.expect("Couldnt start");
 }
